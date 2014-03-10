@@ -22,9 +22,6 @@ public final class GeneratePropertiesMojo extends AbstractGenerateMojo {
     @Parameter
     private String separator;
     
-    @Parameter(readonly=true, required=true, defaultValue="${project}")
-    private MavenProject project;
-
     @Override
     protected final String getDestinationPattern() {
         return propertyName;

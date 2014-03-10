@@ -21,9 +21,6 @@ public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo
     @Parameter(required=true)
     private String output;
     
-    @Parameter(readonly=true, required=true, defaultValue="${project}")
-    private MavenProject project;
-    
     @Override
     protected final String getDestinationPattern() {
         return resourceName;
