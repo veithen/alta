@@ -2,6 +2,7 @@ package com.github.veithen.alta;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.InvalidRepositoryException;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -22,12 +24,14 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.RepositorySystem;
 
 import com.github.veithen.alta.pattern.InvalidPatternException;
 import com.github.veithen.alta.pattern.Pattern;
@@ -82,6 +86,12 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     @Parameter
     private ArtifactItem[] artifacts;
     
+    @Parameter
+    private Repository[] repositories;
+    
+    @Component
+    private RepositorySystem repositorySystem;
+    
     @Component
     private ArtifactFactory factory;
     
@@ -113,6 +123,21 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         } catch (InvalidPatternException ex) {
             throw new MojoExecutionException("Invalid value pattern", ex);
         }
+        List<ArtifactRepository> pomRepositories = project.getRemoteArtifactRepositories();
+        List<ArtifactRepository> effectiveRepositories;
+        if (repositories != null && repositories.length > 0) {
+            effectiveRepositories = new ArrayList<ArtifactRepository>(pomRepositories.size() + repositories.length);
+            effectiveRepositories.addAll(pomRepositories);
+            for (Repository repository : repositories) {
+                try {
+                    effectiveRepositories.add(repositorySystem.buildArtifactRepository(repository));
+                } catch (InvalidRepositoryException ex) {
+                    throw new MojoExecutionException("Invalid repository", ex);
+                }
+            }
+        } else {
+            effectiveRepositories = pomRepositories;
+        }
         List<Artifact> resolvedArtifacts = new ArrayList<Artifact>();
         if (artifacts != null) {
             for (ArtifactItem artifactItem : artifacts) {
@@ -126,11 +151,11 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                         version, artifactItem.getType(), artifactItem.getClassifier(), Artifact.SCOPE_COMPILE);
                 try {
                     // Find an appropriate version in the specified version range
-                    ArtifactResolutionResult artifactResolutionResult = artifactCollector.collect(Collections.singleton(artifact), project.getArtifact(), localRepository, project.getRemoteArtifactRepositories(), artifactMetadataSource, null, Collections.EMPTY_LIST);
+                    ArtifactResolutionResult artifactResolutionResult = artifactCollector.collect(Collections.singleton(artifact), project.getArtifact(), localRepository, effectiveRepositories, artifactMetadataSource, null, Collections.EMPTY_LIST);
                     artifact = ((ResolutionNode)artifactResolutionResult.getArtifactResolutionNodes().iterator().next()).getArtifact();
                     
                     // Download the artifact
-                    resolver.resolve(artifact, project.getRemoteArtifactRepositories(), localRepository);
+                    resolver.resolve(artifact, effectiveRepositories, localRepository);
                 } catch (ArtifactResolutionException ex) {
                     throw new MojoExecutionException("Unable to resolve artifact", ex);
                 } catch (ArtifactNotFoundException ex) {
