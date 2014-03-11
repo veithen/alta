@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,15 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo {
+    private static final Map<String,String> paxExamCompatMap = new HashMap<String,String>();
+    
+    static {
+        paxExamCompatMap.put("META-INF/links/org.ops4j.pax.exam.extender.service.link", "META-INF/links/org.ops4j.pax.extender.service.link");
+        paxExamCompatMap.put("META-INF/links/osgi.cmpn.link", "META-INF/links/org.osgi.compendium.link");
+        paxExamCompatMap.put("META-INF/links/org.ops4j.pax.logging.pax-logging-api.link", "META-INF/links/org.ops4j.pax.logging.api.link");
+        paxExamCompatMap.put("META-INF/links/org.apache.geronimo.specs.geronimo-atinject_1.0_spec.link", "META-INF/links/org.apache.geronimo.specs.atinject.link");
+    }
+    
     @Parameter(required=true)
     private String resourceName;
     
@@ -35,7 +45,13 @@ public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo
     protected void process(Map<String,List<String>> result) throws MojoExecutionException, MojoFailureException {
         File outputDirectory = getOutputDirectory();
         for (Map.Entry<String,List<String>> entry : result.entrySet()) {
-            File outputFile = new File(outputDirectory, entry.getKey());
+            String resource = entry.getKey();
+            String replacementResource = paxExamCompatMap.get(resource);
+            if (replacementResource != null) {
+                getLog().info("Using " + replacementResource + " instead of " + resource + " for compatibility with Pax Exam");
+                resource = replacementResource;
+            }
+            File outputFile = new File(outputDirectory, resource);
             outputFile.getParentFile().mkdirs();
             try {
                 FileOutputStream fos = new FileOutputStream(outputFile);
@@ -51,7 +67,7 @@ public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo
                     fos.close();
                 }
             } catch (IOException ex) {
-                throw new MojoExecutionException("Failed to write resource " + entry.getKey(), ex);
+                throw new MojoExecutionException("Failed to write resource " + resource, ex);
             }
         }
         Resource resource = new Resource();

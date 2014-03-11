@@ -45,6 +45,7 @@ public abstract class PropertyGroup<C,GC> {
      *            the context object
      * @return the group context or <code>null</code> if the property group is not supported for the
      *         given artifact
+     * @throws EvaluationException
      */
-    public abstract GC prepare(C object);
+    public abstract GC prepare(C object) throws EvaluationException;
 }

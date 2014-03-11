@@ -15,7 +15,7 @@ public class PatternTest {
         patternCompiler = new PatternCompiler<Person>();
         PropertyGroup<Person,Person> personGroup = new PropertyGroup<Person,Person>(Person.class) {
             @Override
-            public Person prepare(Person object) {
+            public Person prepare(Person object) throws EvaluationException {
                 return object;
             }
         };
@@ -32,7 +32,7 @@ public class PatternTest {
         patternCompiler.setDefaultPropertyGroup(personGroup);
         PropertyGroup<Person,Address> addressGroup = new PropertyGroup<Person,Address>(Address.class) {
             @Override
-            public Address prepare(Person object) {
+            public Address prepare(Person object) throws EvaluationException {
                 return object.getAddress();
             }
         };

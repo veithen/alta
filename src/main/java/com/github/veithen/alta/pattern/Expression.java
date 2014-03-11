@@ -14,6 +14,7 @@ abstract class Expression<C> {
      *            the buffer to append the result of the evaluation to
      * @return <code>true</code> if the expression was evaluated successfully; <code>false</code> if
      *         the expression is not supported for the given artifact
+     * @throws EvaluationException
      */
-    abstract boolean evaluate(C object, Map<Object,Object> contextMap, StringBuilder buffer);
+    abstract boolean evaluate(C object, Map<Object,Object> contextMap, StringBuilder buffer) throws EvaluationException;
 }

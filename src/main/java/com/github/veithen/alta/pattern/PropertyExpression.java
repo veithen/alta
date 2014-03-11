@@ -12,7 +12,7 @@ final class PropertyExpression<C,GC> extends Expression<C> {
     }
 
     @Override
-    boolean evaluate(C object, Map<Object,Object> contextMap, StringBuilder buffer) {
+    boolean evaluate(C object, Map<Object,Object> contextMap, StringBuilder buffer) throws EvaluationException {
         GC groupContext = group.getGroupContextClass().cast(contextMap.get(group));
         if (groupContext == null) {
             groupContext = group.prepare(object);

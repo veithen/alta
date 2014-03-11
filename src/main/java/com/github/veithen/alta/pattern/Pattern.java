@@ -11,7 +11,7 @@ public final class Pattern<C> {
         this.expressions = expressions;
     }
     
-    public String evaluate(C object) {
+    public String evaluate(C object) throws EvaluationException {
         Map<Object,Object> contextMap = new HashMap<Object,Object>();
         StringBuilder buffer = new StringBuilder();
         for (Expression<? super C> expression : expressions) {

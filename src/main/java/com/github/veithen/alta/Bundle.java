@@ -1,5 +1,13 @@
 package com.github.veithen.alta;
 
-public final class Bundle {
+final class Bundle {
+    private final String symbolicName;
 
+    Bundle(String symbolicName) {
+        this.symbolicName = symbolicName;
+    }
+
+    String getSymbolicName() {
+        return symbolicName;
+    }
 }
