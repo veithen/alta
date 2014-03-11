@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -106,6 +107,13 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         });
         patternCompiler.addPropertyGroup("bundle", bundleGroup);
+        PropertyGroup<Artifact,PaxExamInfo> paxExamGroup = new PaxExamGroup();
+        paxExamGroup.addProperty("linkName", new Property<PaxExamInfo>() {
+            public String evaluate(PaxExamInfo paxExamInfo) {
+                return paxExamInfo.getLinkName();
+            }
+        });
+        patternCompiler.addPropertyGroup("paxexam", paxExamGroup);
     }
     
     /**
@@ -113,6 +121,14 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
      */
     @Parameter(required=true)
     private String name;
+    
+    /**
+     * An alternate destination name pattern. This is used if the pattern specified by the
+     * <tt>name</tt> parameter is not resolvable (because it contains a reference to a property
+     * that is not supported for the given artifact).
+     */
+    @Parameter
+    private String altName;
     
     /**
      * The pattern of the value to generate.
@@ -156,7 +172,17 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         try {
             namePattern = patternCompiler.compile(name);
         } catch (InvalidPatternException ex) {
-            throw new MojoExecutionException("Invalid destination pattern", ex);
+            throw new MojoExecutionException("Invalid destination name pattern", ex);
+        }
+        Pattern<Artifact> altNamePattern;
+        if (altName == null) {
+            altNamePattern = null;
+        } else {
+            try {
+                altNamePattern = patternCompiler.compile(altName);
+            } catch (InvalidPatternException ex) {
+                throw new MojoExecutionException("Invalid altName pattern", ex);
+            }
         }
         Pattern<Artifact> valuePattern;
         try {
@@ -228,16 +254,39 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         }
         Map<String,List<String>> result = new HashMap<String,List<String>>();
         for (Artifact artifact : resolvedArtifacts) {
+            if (log.isDebugEnabled()) {
+                log.debug("Processing artifact " + artifact.getId());
+            }
             try {
-                String destination = namePattern.evaluate(artifact);
-                List<String> values = result.get(destination);
+                String name = namePattern.evaluate(artifact);
+                if (log.isDebugEnabled()) {
+                    log.debug("name = " + name);
+                }
+                if (name == null && altNamePattern != null) {
+                    log.debug("Using altName");
+                    name = altNamePattern.evaluate(artifact);
+                    if (log.isDebugEnabled()) {
+                        log.debug("name = " + name);
+                    }
+                }
+                if (name == null) {
+                    continue;
+                }
+                String value = valuePattern.evaluate(artifact);
+                if (log.isDebugEnabled()) {
+                    log.debug("value = " + value);
+                }
+                if (value == null) {
+                    continue;
+                }
+                List<String> values = result.get(name);
                 if (values == null) {
                     values = new ArrayList<String>();
-                    result.put(destination, values);
+                    result.put(name, values);
                 }
-                values.add(valuePattern.evaluate(artifact));
+                values.add(value);
             } catch (EvaluationException ex) {
-                throw new MojoExecutionException("Failed to process artifact " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getVersion());
+                throw new MojoExecutionException("Failed to process artifact " + artifact.getId());
             }
         }
         process(result);

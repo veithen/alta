@@ -15,7 +15,9 @@ public final class Pattern<C> {
         Map<Object,Object> contextMap = new HashMap<Object,Object>();
         StringBuilder buffer = new StringBuilder();
         for (Expression<? super C> expression : expressions) {
-            expression.evaluate(object, contextMap, buffer);
+            if (!expression.evaluate(object, contextMap, buffer)) {
+                return null;
+            }
         }
         return buffer.toString();
     }

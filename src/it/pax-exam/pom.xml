@@ -80,7 +80,8 @@
                             <goal>generate-test-resources</goal>
                         </goals>
                         <configuration>
-                            <name>META-INF/links/%bundle.symbolicName%.link</name>
+                            <name>%paxexam.linkName%</name>
+                            <altName>%bundle.symbolicName%.link</altName>
                             <value>%url%</value>
                             <dependencySet>
                                 <scope>test</scope>

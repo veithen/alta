@@ -1,17 +1,16 @@
 package com.github.veithen.alta.pattern;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class PatternTest {
-    private Person person;
     private PatternCompiler<Person> patternCompiler;
     
     @Before
     public void setUp() {
-        person = new Person("Roy", "Manning", new Address("High street", "Dummytown"));
         patternCompiler = new PatternCompiler<Person>();
         PropertyGroup<Person,Person> personGroup = new PropertyGroup<Person,Person>(Person.class) {
             @Override
@@ -51,6 +50,13 @@ public class PatternTest {
     
     @Test
     public void test() throws Exception {
+        Person person = new Person("Roy", "Manning", new Address("High street", "Dummytown"));
         assertEquals("Roy Manning lives in Dummytown", patternCompiler.compile("%givenName% %surname% lives in %address.city%").evaluate(person));
+    }
+    
+    @Test
+    public void testPropertyNotSupported() throws Exception {
+        Person person = new Person("Albert", "Einstein", null);
+        assertNull(patternCompiler.compile("%address.street% %address.city%").evaluate(person));
     }
 }
