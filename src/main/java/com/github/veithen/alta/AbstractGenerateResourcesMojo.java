@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo {
@@ -25,22 +24,6 @@ public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo
         paxExamCompatMap.put("META-INF/links/org.apache.geronimo.specs.geronimo-atinject_1.0_spec.link", "META-INF/links/org.apache.geronimo.specs.atinject.link");
     }
     
-    @Parameter(required=true)
-    private String resourceName;
-    
-    @Parameter(required=true)
-    private String output;
-    
-    @Override
-    protected final String getDestinationPattern() {
-        return resourceName;
-    }
-
-    @Override
-    protected final String getValuePattern() {
-        return output;
-    }
-
     @Override
     protected void process(Map<String,List<String>> result) throws MojoExecutionException, MojoFailureException {
         File outputDirectory = getOutputDirectory();

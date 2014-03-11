@@ -37,8 +37,8 @@
                             <goal>generate-test-resources</goal>
                         </goals>
                         <configuration>
-                            <resourceName>parsers.list</resourceName>
-                            <output>%url%</output>
+                            <name>parsers.list</name>
+                            <value>%url%</value>
                             <artifacts>
                                 <artifact>
                                     <groupId>org.codehaus.woodstox</groupId>

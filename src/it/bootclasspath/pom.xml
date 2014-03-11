@@ -31,7 +31,7 @@
                             <goal>generate-properties</goal>
                         </goals>
                         <configuration>
-                            <propertyName>bootclasspath</propertyName>
+                            <name>bootclasspath</name>
                             <value>%file%</value>
                             <separator>${path.separator}</separator>
                             <artifacts>

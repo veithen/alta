@@ -108,6 +108,18 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         patternCompiler.addPropertyGroup("bundle", bundleGroup);
     }
     
+    /**
+     * The destination name pattern, i.e. the name of the resource or Maven property.
+     */
+    @Parameter(required=true)
+    private String name;
+    
+    /**
+     * The pattern of the value to generate.
+     */
+    @Parameter(required=true)
+    private String value;
+    
     @Parameter
     private DependencySet dependencySet;
     
@@ -140,15 +152,15 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     
     public final void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
-        Pattern<Artifact> destinationPattern;
+        Pattern<Artifact> namePattern;
         try {
-            destinationPattern = patternCompiler.compile(getDestinationPattern());
+            namePattern = patternCompiler.compile(name);
         } catch (InvalidPatternException ex) {
             throw new MojoExecutionException("Invalid destination pattern", ex);
         }
         Pattern<Artifact> valuePattern;
         try {
-            valuePattern = patternCompiler.compile(getValuePattern());
+            valuePattern = patternCompiler.compile(value);
         } catch (InvalidPatternException ex) {
             throw new MojoExecutionException("Invalid value pattern", ex);
         }
@@ -217,7 +229,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         Map<String,List<String>> result = new HashMap<String,List<String>>();
         for (Artifact artifact : resolvedArtifacts) {
             try {
-                String destination = destinationPattern.evaluate(artifact);
+                String destination = namePattern.evaluate(artifact);
                 List<String> values = result.get(destination);
                 if (values == null) {
                     values = new ArrayList<String>();
@@ -259,7 +271,5 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         return null;
     }
     
-    protected abstract String getDestinationPattern();
-    protected abstract String getValuePattern();
     protected abstract void process(Map<String,List<String>> result) throws MojoExecutionException, MojoFailureException;
 }

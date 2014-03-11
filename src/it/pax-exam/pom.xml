@@ -80,8 +80,8 @@
                             <goal>generate-test-resources</goal>
                         </goals>
                         <configuration>
-                            <resourceName>META-INF/links/%bundle.symbolicName%.link</resourceName>
-                            <output>%url%</output>
+                            <name>META-INF/links/%bundle.symbolicName%.link</name>
+                            <value>%url%</value>
                             <dependencySet>
                                 <scope>test</scope>
                             </dependencySet>

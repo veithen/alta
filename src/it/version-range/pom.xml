@@ -15,8 +15,8 @@
                             <goal>generate-test-resources</goal>
                         </goals>
                         <configuration>
-                            <resourceName>axis-version</resourceName>
-                            <output>%version%</output>
+                            <name>axis-version</name>
+                            <value>%version%</value>
                             <artifacts>
                                 <artifact>
                                     <groupId>axis</groupId>
