@@ -336,7 +336,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 }
                 values.add(value);
             } catch (EvaluationException ex) {
-                throw new MojoExecutionException("Failed to process artifact " + artifact.getId());
+                throw new MojoExecutionException("Failed to process artifact " + artifact.getId(), ex);
             }
         }
         process(result);
