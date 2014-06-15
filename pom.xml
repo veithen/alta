@@ -6,6 +6,7 @@
     <version>0.1-SNAPSHOT</version>
     <name>Alta Maven Plugin</name>
     <packaging>maven-plugin</packaging>
+    <inceptionYear>2014</inceptionYear>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -97,6 +98,22 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.7</version>
+                <configuration>
+                    <projectName>Alta Maven Plugin</projectName>
+                    <organizationName>The Alta Maven Plugin Authors.</organizationName>
+                    <licenseName>apache_v2</licenseName>
+                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                    <canUpdateCopyright>true</canUpdateCopyright>
+                    <canUpdateDescription>true</canUpdateDescription>
+                    <extraExtensions>
+                        <bsh>java</bsh>
+                    </extraExtensions>
+                </configuration>
             </plugin>
         </plugins>
     </build>
