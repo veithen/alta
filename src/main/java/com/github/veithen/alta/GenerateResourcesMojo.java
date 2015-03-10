@@ -30,7 +30,8 @@ import org.apache.maven.project.MavenProject;
 @Mojo(name="generate-resources", defaultPhase=LifecyclePhase.GENERATE_RESOURCES)
 public final class GenerateResourcesMojo extends AbstractGenerateResourcesMojo {
     /**
-     * Output directory for generated resources.
+     * Output directory for generated resources. Note that this directory will be automatically
+     * added to the project's resources and doesn't need to be specified in the POM file.
      */
     @Parameter(required=true, defaultValue="${project.build.directory}/generated-resources/alta")
     private File outputDirectory;

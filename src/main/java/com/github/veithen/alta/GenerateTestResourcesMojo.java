@@ -30,7 +30,8 @@ import org.apache.maven.project.MavenProject;
 @Mojo(name="generate-test-resources", defaultPhase=LifecyclePhase.GENERATE_TEST_RESOURCES)
 public final class GenerateTestResourcesMojo extends AbstractGenerateResourcesMojo {
     /**
-     * Output directory for generated resources.
+     * Output directory for generated resources. Note that this directory will be automatically
+     * added to the project's test resources and doesn't need to be specified in the POM file.
      */
     @Parameter(required=true, defaultValue="${project.build.directory}/generated-test-resources/alta")
     private File outputDirectory;
