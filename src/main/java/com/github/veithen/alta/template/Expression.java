@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.github.veithen.alta.pattern;
+package com.github.veithen.alta.template;
 
 import java.util.Map;
 

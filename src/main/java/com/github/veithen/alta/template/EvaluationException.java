@@ -17,12 +17,16 @@
  * limitations under the License.
  * #L%
  */
-package com.github.veithen.alta.pattern;
+package com.github.veithen.alta.template;
 
-public class InvalidPatternException extends Exception {
+public class EvaluationException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public InvalidPatternException(String msg) {
+    public EvaluationException(String msg) {
         super(msg);
+    }
+
+    public EvaluationException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

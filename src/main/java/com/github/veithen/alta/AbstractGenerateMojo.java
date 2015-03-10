@@ -66,18 +66,18 @@ import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.apache.maven.project.artifact.MavenMetadataSource;
 import org.apache.maven.repository.RepositorySystem;
 
-import com.github.veithen.alta.pattern.EvaluationException;
-import com.github.veithen.alta.pattern.InvalidPatternException;
-import com.github.veithen.alta.pattern.Pattern;
-import com.github.veithen.alta.pattern.PatternCompiler;
-import com.github.veithen.alta.pattern.Property;
-import com.github.veithen.alta.pattern.PropertyGroup;
+import com.github.veithen.alta.template.EvaluationException;
+import com.github.veithen.alta.template.InvalidTemplateException;
+import com.github.veithen.alta.template.Property;
+import com.github.veithen.alta.template.PropertyGroup;
+import com.github.veithen.alta.template.Template;
+import com.github.veithen.alta.template.TemplateCompiler;
 
 public abstract class AbstractGenerateMojo extends AbstractMojo {
-    private static final PatternCompiler<Context> patternCompiler;
+    private static final TemplateCompiler<Context> templateCompiler;
     
     static {
-        patternCompiler = new PatternCompiler<Context>();
+        templateCompiler = new TemplateCompiler<Context>();
         PropertyGroup<Context,Artifact> artifactGroup = new PropertyGroup<Context,Artifact>(Artifact.class) {
             @Override
             public Artifact prepare(Context context) throws EvaluationException {
@@ -113,7 +113,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 }
             }
         });
-        patternCompiler.setDefaultPropertyGroup(artifactGroup);
+        templateCompiler.setDefaultPropertyGroup(artifactGroup);
         PropertyGroup<Context,Bundle> bundleGroup = new PropertyGroup<Context,Bundle>(Bundle.class) {
             @Override
             public Bundle prepare(Context context) throws EvaluationException {
@@ -130,7 +130,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 return bundle.getSymbolicName();
             }
         });
-        patternCompiler.addPropertyGroup("bundle", bundleGroup);
+        templateCompiler.addPropertyGroup("bundle", bundleGroup);
         PropertyGroup<Context,PaxExamLink> paxExamGroup = new PropertyGroup<Context,PaxExamLink>(PaxExamLink.class) {
             @Override
             public PaxExamLink prepare(Context context) throws EvaluationException {
@@ -152,17 +152,17 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 return link.getLinkName();
             }
         });
-        patternCompiler.addPropertyGroup("paxexam", paxExamGroup);
+        templateCompiler.addPropertyGroup("paxexam", paxExamGroup);
     }
     
     /**
-     * The destination name pattern, i.e. the name of the resource or Maven property.
+     * The destination name template, i.e. the name of the resource or Maven property.
      */
     @Parameter(required=true)
     private String name;
     
     /**
-     * An alternate destination name pattern. This is used if the pattern specified by the
+     * An alternate destination name template. This is used if the template specified by the
      * <tt>name</tt> parameter is not resolvable (because it contains a reference to a property
      * that is not supported for the given artifact).
      */
@@ -170,7 +170,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     private String altName;
     
     /**
-     * The pattern of the value to generate.
+     * The template of the value to generate.
      */
     @Parameter(required=true)
     private String value;
@@ -215,27 +215,27 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     
     public final void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
-        Pattern<Context> namePattern;
+        Template<Context> nameTemplate;
         try {
-            namePattern = patternCompiler.compile(name);
-        } catch (InvalidPatternException ex) {
-            throw new MojoExecutionException("Invalid destination name pattern", ex);
+            nameTemplate = templateCompiler.compile(name);
+        } catch (InvalidTemplateException ex) {
+            throw new MojoExecutionException("Invalid destination name template", ex);
         }
-        Pattern<Context> altNamePattern;
+        Template<Context> altNameTemplate;
         if (altName == null) {
-            altNamePattern = null;
+            altNameTemplate = null;
         } else {
             try {
-                altNamePattern = patternCompiler.compile(altName);
-            } catch (InvalidPatternException ex) {
-                throw new MojoExecutionException("Invalid altName pattern", ex);
+                altNameTemplate = templateCompiler.compile(altName);
+            } catch (InvalidTemplateException ex) {
+                throw new MojoExecutionException("Invalid altName template", ex);
             }
         }
-        Pattern<Context> valuePattern;
+        Template<Context> valueTemplate;
         try {
-            valuePattern = patternCompiler.compile(value);
-        } catch (InvalidPatternException ex) {
-            throw new MojoExecutionException("Invalid value pattern", ex);
+            valueTemplate = templateCompiler.compile(value);
+        } catch (InvalidTemplateException ex) {
+            throw new MojoExecutionException("Invalid value template", ex);
         }
         List<Artifact> resolvedArtifacts = new ArrayList<Artifact>();
         
@@ -327,13 +327,13 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
             Context context = new Context(artifact, paxExamLinks);
             try {
-                String name = namePattern.evaluate(context);
+                String name = nameTemplate.evaluate(context);
                 if (log.isDebugEnabled()) {
                     log.debug("name = " + name);
                 }
-                if (name == null && altNamePattern != null) {
+                if (name == null && altNameTemplate != null) {
                     log.debug("Using altName");
-                    name = altNamePattern.evaluate(context);
+                    name = altNameTemplate.evaluate(context);
                     if (log.isDebugEnabled()) {
                         log.debug("name = " + name);
                     }
@@ -341,7 +341,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 if (name == null) {
                     continue;
                 }
-                String value = valuePattern.evaluate(context);
+                String value = valueTemplate.evaluate(context);
                 if (log.isDebugEnabled()) {
                     log.debug("value = " + value);
                 }

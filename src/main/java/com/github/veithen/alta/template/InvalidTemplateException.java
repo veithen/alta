@@ -17,8 +17,12 @@
  * limitations under the License.
  * #L%
  */
-package com.github.veithen.alta.pattern;
+package com.github.veithen.alta.template;
 
-public interface Property<GC> {
-    String evaluate(GC groupContext);
+public class InvalidTemplateException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    public InvalidTemplateException(String msg) {
+        super(msg);
+    }
 }

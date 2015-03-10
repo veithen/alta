@@ -17,16 +17,22 @@
  * limitations under the License.
  * #L%
  */
-package com.github.veithen.alta.pattern;
+package com.github.veithen.alta.template;
 
-public class EvaluationException extends Exception {
-    private static final long serialVersionUID = 1L;
-
-    public EvaluationException(String msg) {
-        super(msg);
+public class Address {
+    private final String street;
+    private final String city;
+    
+    public Address(String street, String city) {
+        this.street = street;
+        this.city = city;
     }
 
-    public EvaluationException(String msg, Throwable cause) {
-        super(msg, cause);
+    public String getStreet() {
+        return street;
+    }
+
+    public String getCity() {
+        return city;
     }
 }

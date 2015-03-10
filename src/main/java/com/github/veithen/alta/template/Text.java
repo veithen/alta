@@ -17,27 +17,20 @@
  * limitations under the License.
  * #L%
  */
-package com.github.veithen.alta.pattern;
+package com.github.veithen.alta.template;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public final class Pattern<C> {
-    private final List<Expression<? super C>> expressions;
-    
-    Pattern(List<Expression<? super C>> expressions) {
-        this.expressions = expressions;
+final class Text extends Expression<Object> {
+    private final String content;
+
+    Text(String content) {
+        this.content = content;
     }
-    
-    public String evaluate(C object) throws EvaluationException {
-        Map<Object,Object> contextMap = new HashMap<Object,Object>();
-        StringBuilder buffer = new StringBuilder();
-        for (Expression<? super C> expression : expressions) {
-            if (!expression.evaluate(object, contextMap, buffer)) {
-                return null;
-            }
-        }
-        return buffer.toString();
+
+    @Override
+    boolean evaluate(Object object, Map<Object,Object> contextMap, StringBuilder buffer) {
+        buffer.append(content);
+        return true;
     }
 }

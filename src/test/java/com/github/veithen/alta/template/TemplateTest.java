@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.github.veithen.alta.pattern;
+package com.github.veithen.alta.template;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -25,12 +25,17 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PatternTest {
-    private PatternCompiler<Person> patternCompiler;
+import com.github.veithen.alta.template.EvaluationException;
+import com.github.veithen.alta.template.Property;
+import com.github.veithen.alta.template.PropertyGroup;
+import com.github.veithen.alta.template.TemplateCompiler;
+
+public class TemplateTest {
+    private TemplateCompiler<Person> templateCompiler;
     
     @Before
     public void setUp() {
-        patternCompiler = new PatternCompiler<Person>();
+        templateCompiler = new TemplateCompiler<Person>();
         PropertyGroup<Person,Person> personGroup = new PropertyGroup<Person,Person>(Person.class) {
             @Override
             public Person prepare(Person object) throws EvaluationException {
@@ -47,7 +52,7 @@ public class PatternTest {
                 return groupContext.getSurname();
             }
         });
-        patternCompiler.setDefaultPropertyGroup(personGroup);
+        templateCompiler.setDefaultPropertyGroup(personGroup);
         PropertyGroup<Person,Address> addressGroup = new PropertyGroup<Person,Address>(Address.class) {
             @Override
             public Address prepare(Person object) throws EvaluationException {
@@ -64,18 +69,18 @@ public class PatternTest {
                 return groupContext.getCity();
             }
         });
-        patternCompiler.addPropertyGroup("address", addressGroup);
+        templateCompiler.addPropertyGroup("address", addressGroup);
     }
     
     @Test
     public void test() throws Exception {
         Person person = new Person("Roy", "Manning", new Address("High street", "Dummytown"));
-        assertEquals("Roy Manning lives in Dummytown", patternCompiler.compile("%givenName% %surname% lives in %address.city%").evaluate(person));
+        assertEquals("Roy Manning lives in Dummytown", templateCompiler.compile("%givenName% %surname% lives in %address.city%").evaluate(person));
     }
     
     @Test
     public void testPropertyNotSupported() throws Exception {
         Person person = new Person("Albert", "Einstein", null);
-        assertNull(patternCompiler.compile("%address.street% %address.city%").evaluate(person));
+        assertNull(templateCompiler.compile("%address.street% %address.city%").evaluate(person));
     }
 }
