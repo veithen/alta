@@ -59,11 +59,20 @@
         </dependency>
     </dependencies>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.github.veithen.alta</groupId>
+                    <artifactId>alta-maven-plugin</artifactId>
+                    <version>@project.version@</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
+            <!-- SNIPPET START: plugin -->
             <plugin>
-                <groupId>@project.groupId@</groupId>
-                <artifactId>@project.artifactId@</artifactId>
-                <version>@project.version@</version>
+                <groupId>com.github.veithen.alta</groupId>
+                <artifactId>alta-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
@@ -81,6 +90,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- SNIPPET END: plugin -->
         </plugins>
     </build>
 </project>

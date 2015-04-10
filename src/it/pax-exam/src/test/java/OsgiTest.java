@@ -36,12 +36,14 @@ import org.osgi.service.cm.ConfigurationAdmin;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class OsgiTest {
+    // START SNIPPET: configuration
     @Configuration
     public static Option[] configuration() {
         return options(
             url("link:classpath:org.apache.felix.configadmin.link"),
             junitBundles());
     }
+    // END SNIPPET: configuration
     
     @Inject
     private ConfigurationAdmin configAdmin;

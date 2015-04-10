@@ -7,6 +7,11 @@
     <name>Alta Maven Plugin</name>
     <packaging>maven-plugin</packaging>
     <inceptionYear>2014</inceptionYear>
+    <scm>
+        <url>https://github.com/veithen/alta</url>
+        <connection>scm:git:http://github.com/veithen/alta.git</connection>
+        <developerConnection>scm:git:https://github.com/veithen/alta.git</developerConnection>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -127,6 +132,7 @@
                     <reportSet>
                         <reports>
                             <report>index</report>
+                            <report>scm</report>
                         </reports>
                     </reportSet>
                 </reportSets>

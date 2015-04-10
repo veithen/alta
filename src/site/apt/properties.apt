@@ -1,0 +1,52 @@
+~~~
+~~ #%L
+~~ Alta Maven Plugin
+~~ %%
+~~ Copyright (C) 2014 The Alta Maven Plugin Authors.
+~~ %%
+~~ Licensed under the Apache License, Version 2.0 (the "License");
+~~ you may not use this file except in compliance with the License.
+~~ You may obtain a copy of the License at
+~~ 
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~ 
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+~~ #L%
+~~~
+
+ ------
+ Supported properties
+ ------
+
+Supported properties
+
+*-------------------------------+--------------------------------------------------------------------+
+|| Property                     || Description                                                       |
+*-------------------------------+--------------------------------------------------------------------+
+| <<<groupId>>>                 | The Maven group ID                                                 |
+*-------------------------------+--------------------------------------------------------------------+
+| <<<artifactId>>>              | The Maven artifact ID                                              |
+*-------------------------------+--------------------------------------------------------------------+
+| <<<version>>>                 | The Maven version                                                  |
+*-------------------------------+--------------------------------------------------------------------+
+| <<<file>>>                    | The full path of the artifact in the local Maven repository        |
+*-------------------------------+--------------------------------------------------------------------+
+| <<<url>>>                     | A <<<file://>>> URL for the artifact in the local Maven repository |
+*-------------------------------+--------------------------------------------------------------------+
+| <<<bundle.symbolicName>>>     | The symbolic name if the artifact is an OSGi bundle                |
+*-------------------------------+--------------------------------------------------------------------+
+| <<<bundle.paxexam.linkName>>> | See {{{./examples/pax-exam.html}here}} for a description of this   |
+|                               | property                                                           |
+*-------------------------------+--------------------------------------------------------------------+
+
+  Obviously the <<<file>>> and <<<url>>> properties have values that depend on the local build
+  environment. They are typically used with the {{{./generate-properties-mojo.html}generate-properties}}
+  and {{{./generate-test-resources-mojo.html}generate-test-resources}} goals, but not with
+  {{{./generate-resources-mojo.html}generate-resources}}.
+
+  As mentioned in the {{{./index.html#Unresolvable_properties}introduction}}, the <<<bundle.*>>>
+  properties are only defined for Maven artifacts that are also OSGi bundles.

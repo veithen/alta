@@ -18,17 +18,25 @@
   limitations under the License.
   #L%
   -->
-
 <project>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.3.1</version>
+    </skin>
     <body>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
             <item name="Goals" href="plugin-info.html"/>
-            <item name="Usage" href="usage.html"/>
+            <item name="Supported properties" href="properties.html"/>
+            <item name="Configuring the artifact set" href="artifact-sets.html"/>
         </menu>
         <menu name="Examples">
-            <item name="description1" href="examples/example-one.html"/>
-            <item name="description2" href="examples/example-two.html"/>
+            <item name="Configuring endorsed libraries in unit tests" href="examples/bootclasspath.html"/>
+            <item name="Using Pax Exam in Maven builds" href="examples/pax-exam.html"/>
+        </menu>
+        <menu name="Project Information">
+            <item name="Source Repository" href="source-repository.html"/>
         </menu>
     </body>
 </project>
