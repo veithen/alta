@@ -21,15 +21,23 @@ package com.github.veithen.alta;
 
 import java.io.File;
 
-import org.apache.maven.model.Resource;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
-public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateFilesMojo {
-    protected final void postProcess(File outputDirectory) {
-        Resource resource = new Resource();
-        resource.setDirectory(outputDirectory.getPath());
-        addResource(project, resource);
+@Mojo(name="generate-files")
+public final class GenerateFilesMojo extends AbstractGenerateFilesMojo {
+    /**
+     * Output directory for generated files.
+     */
+    @Parameter(required=true, defaultValue="${project.build.directory}")
+    private File outputDirectory;
+
+    @Override
+    protected File getOutputDirectory() {
+        return outputDirectory;
     }
 
-    protected abstract void addResource(MavenProject project, Resource resource);
+    @Override
+    protected void postProcess(File outputDirectory) {
+    }
 }

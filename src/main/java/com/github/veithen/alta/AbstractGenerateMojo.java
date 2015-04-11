@@ -155,7 +155,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     }
     
     /**
-     * The destination name template, i.e. the name of the resource or Maven property.
+     * The destination name template.
      */
     @Parameter(required=true)
     private String name;

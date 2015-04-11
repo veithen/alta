@@ -44,9 +44,7 @@ Supported properties
 *-------------------------------+--------------------------------------------------------------------+
 
   Obviously the <<<file>>> and <<<url>>> properties have values that depend on the local build
-  environment. They are typically used with the {{{./generate-properties-mojo.html}generate-properties}}
-  and {{{./generate-test-resources-mojo.html}generate-test-resources}} goals, but not with
-  {{{./generate-resources-mojo.html}generate-resources}}.
+  environment. They are typically not used with {{{./generate-resources-mojo.html}generate-resources}}.
 
   As mentioned in the {{{./index.html#Unresolvable_properties}introduction}}, the <<<bundle.*>>>
   properties are only defined for Maven artifacts that are also OSGi bundles.

@@ -37,7 +37,9 @@ ${project.name}
 *------------------------+-----------------------------------------------------------------------+----------------+----------------+
 | Maven project property | {{{./generate-properties-mojo.html}alta:generate-properties}}         | Property name  | Property value |
 *------------------------+-----------------------------------------------------------------------+----------------+----------------+
-| Resources              | {{{./generate-resources-mojo.html}alta:generate-resources}}\          | Resource name  | File content   |
+| File                   | {{{./generate-files-mojo.html}alta:generate-files}}                   | File name      | File content   |
+*------------------------+-----------------------------------------------------------------------+----------------+----------------+
+| Resource               | {{{./generate-resources-mojo.html}alta:generate-resources}}\          | Resource name  | File content   |
 |                        | {{{./generate-test-resources-mojo.html}alta:generate-test-resources}} |                |                |
 *------------------------+-----------------------------------------------------------------------+----------------+----------------+
   
