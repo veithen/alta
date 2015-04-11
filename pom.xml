@@ -44,6 +44,42 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.modello</groupId>
+                <artifactId>modello-maven-plugin</artifactId>
+                <version>1.8.3</version>
+                <configuration>
+                    <version>1.0</version>
+                    <models>
+                        <model>src/main/mdo/artifact-sets.mdo</model>
+                    </models>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>mdo</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>mdo-site</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>xdoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/github/veithen/alta/Configuration.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.2</version>
                 <executions>
