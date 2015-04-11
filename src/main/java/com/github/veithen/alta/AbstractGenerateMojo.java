@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -174,6 +173,14 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
      */
     @Parameter(required=true)
     private String value;
+    
+    /**
+     * The separator that should be used to join values when multiple artifacts map to the same
+     * name. If no separator is configured, then duplicate names will result in an error. To
+     * separate values by newlines, use the <code>line.separator</code> property.
+     */
+    @Parameter
+    private String separator;
     
     @Parameter
     private DependencySet dependencySet;
@@ -320,7 +327,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         }
         
-        Map<String,List<String>> result = new HashMap<String,List<String>>();
+        Map<String,String> result = new HashMap<String,String>();
         for (Artifact artifact : resolvedArtifacts) {
             if (log.isDebugEnabled()) {
                 log.debug("Processing artifact " + artifact.getId());
@@ -348,12 +355,15 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 if (value == null) {
                     continue;
                 }
-                List<String> values = result.get(name);
-                if (values == null) {
-                    values = new ArrayList<String>();
-                    result.put(name, values);
+                String currentValue = result.get(name);
+                if (currentValue == null) {
+                    currentValue = value;
+                } else if (separator == null) {
+                    throw new MojoExecutionException("No separator configured");
+                } else {
+                    currentValue = currentValue + separator + value;
                 }
-                values.add(value);
+                result.put(name, currentValue);
             } catch (EvaluationException ex) {
                 throw new MojoExecutionException("Failed to process artifact " + artifact.getId(), ex);
             }
@@ -430,5 +440,5 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         return links;
     }
     
-    protected abstract void process(Map<String,List<String>> result) throws MojoExecutionException, MojoFailureException;
+    protected abstract void process(Map<String,String> result) throws MojoExecutionException, MojoFailureException;
 }

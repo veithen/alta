@@ -58,6 +58,7 @@
                         <configuration>
                             <name>parsers.list</name>
                             <value>%url%</value>
+                            <separator>${line.separator}</separator>
                             <artifacts>
                                 <artifact>
                                     <groupId>org.codehaus.woodstox</groupId>

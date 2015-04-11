@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.model.Resource;
@@ -35,10 +34,10 @@ import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo {
     @Override
-    protected void process(Map<String,List<String>> result) throws MojoExecutionException, MojoFailureException {
+    protected void process(Map<String,String> result) throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
         File outputDirectory = getOutputDirectory();
-        for (Map.Entry<String,List<String>> entry : result.entrySet()) {
+        for (Map.Entry<String,String> entry : result.entrySet()) {
             String resource = entry.getKey();
             File outputFile = new File(outputDirectory, resource);
             File parentDir = outputFile.getParentFile();
@@ -55,10 +54,7 @@ public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateMojo
                 try {
                     // TODO: charset encoding
                     Writer out = new OutputStreamWriter(fos);
-                    for (String value : entry.getValue()) {
-                        out.write(value);
-                        out.write("\n"); // TODO: make this configurable
-                    }
+                    out.write(entry.getValue());
                     out.flush();
                 } finally {
                     fos.close();
