@@ -146,7 +146,7 @@
                 <version>1.7</version>
                 <configuration>
                     <projectName>Alta Maven Plugin</projectName>
-                    <organizationName>The Alta Maven Plugin Authors.</organizationName>
+                    <organizationName>Andreas Veithen</organizationName>
                     <licenseName>apache_v2</licenseName>
                     <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
                     <canUpdateCopyright>true</canUpdateCopyright>
