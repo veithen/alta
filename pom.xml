@@ -13,6 +13,9 @@
         <connection>scm:git:http://github.com/veithen/alta.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/alta.git</developerConnection>
     </scm>
+    <properties>
+        <maven-plugin-plugin.version>3.3</maven-plugin-plugin.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -82,7 +85,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.2</version>
+                <version>${maven-plugin-plugin.version}</version>
                 <executions>
                     <execution>
                         <!-- See MNG-5346 -->
@@ -203,7 +206,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.3</version>
+                <version>${maven-plugin-plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>
