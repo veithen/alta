@@ -1,21 +1,26 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.github.veithen.alta</groupId>
     <artifactId>alta-maven-plugin</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>Alta Maven Plugin</name>
     <packaging>maven-plugin</packaging>
-    <inceptionYear>2014</inceptionYear>
+
+    <name>Alta Maven Plugin</name>
     <url>http://veithen.github.io/alta/</url>
+    <inceptionYear>2014</inceptionYear>
+
     <scm>
         <url>https://github.com/veithen/alta</url>
         <connection>scm:git:http://github.com/veithen/alta.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/alta.git</developerConnection>
     </scm>
+
     <properties>
         <maven-plugin-plugin.version>3.3</maven-plugin-plugin.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -45,6 +50,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -186,8 +192,21 @@
                     </extraExtensions>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tidy-maven-plugin</artifactId>
+                <version>1.0-beta-1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
     <reporting>
         <plugins>
             <plugin>
