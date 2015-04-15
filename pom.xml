@@ -24,6 +24,8 @@
     </distributionManagement>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven-plugin-plugin.version>3.3</maven-plugin-plugin.version>
     </properties>
 
