@@ -94,16 +94,57 @@ public static Option[] configuration() {
 
   This only solves the problem partially because it doesn't eliminate the usage of the <<<mvn:>>>
   protocol entirely.
-  
   The reason is that even with the project setup described above, <<<pax-exam-link-mvn>>> is still
   a required dependency. That JAR contains a set of link files that refer to Maven artifacts using
-  the <<<mvn:>>> protocol. E.g. the <<<META-INF/links/org.ops4j.pax.exam.link>>> resource contains:
+  the <<<mvn:>>> protocol. E.g. the following table shows the name of the link files and their content
+  in Pax Exam 4.5.0:
 
-----------------------------------------
-mvn:org.ops4j.pax.exam/pax-exam/3.3.0
-----------------------------------------
+*--+--+
+| <<<META-INF/links/ch.qos.logback.classic.link>>> | <<<mvn:ch.qos.logback/logback-classic/1.0.7>>> |
+*--+--+
+| <<<META-INF/links/ch.qos.logback.core.link>>> | <<<mvn:ch.qos.logback/logback-core/1.0.7>>> |
+*--+--+
+| <<<META-INF/links/org.apache.geronimo.specs.atinject.link>>> | <<<mvn:org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.base.link>>> | <<<mvn:org.ops4j.base/ops4j-base/1.5.0>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.exam.inject.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-inject/4.5.0>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.exam.invoker.junit.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-invoker-junit/4.5.0>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.exam.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam/4.5.0>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.exam.rbc.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-container-rbc/4.5.0>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.extender.service.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-extender-service/4.5.0>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.logging.api.link>>> | <<<mvn:org.ops4j.pax.logging/pax-logging-api/1.8.2>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.swissbox.core.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-core/1.8.1>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.swissbox.extender.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-extender/1.8.1>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.swissbox.framework.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-framework/1.8.1>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.swissbox.lifecycle.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle/1.8.1>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.swissbox.tracker.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-tracker/1.8.1>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.tipi.hamcrest.core.link>>> | <<<mvn:org.ops4j.pax.tipi/org.ops4j.pax.tipi.hamcrest.core/1.3.0.1>>> |
+*--+--+
+| <<<META-INF/links/org.ops4j.pax.tipi.junit.link>>> | <<<mvn:org.ops4j.pax.tipi/org.ops4j.pax.tipi.junit/4.12.0.1>>> |
+*--+--+
+| <<<META-INF/links/org.osgi.compendium.link>>> | <<<mvn:org.osgi/org.osgi.compendium/4.3.1>>> |
+*--+--+
+| <<<META-INF/links/org.slf4j.api.link>>> | <<<mvn:org.slf4j/slf4j-api/1.6.6>>> |
+*--+--+
 
-  The link files are referenced using hardcoded URLs in [TODO: where?].
+  These link files are referenced in
+  {{{https://github.com/ops4j/org.ops4j.pax.exam2/blob/master/core/pax-exam-spi/src/main/java/org/ops4j/pax/exam/spi/PaxExamRuntime.java#L189}<<<PaxExamRuntime.defaultTestSystemOptions()>>>}} and
+  {{{https://github.com/ops4j/org.ops4j.pax.exam2/blob/exam-reactor-4.5.0/core/pax-exam/src/main/java/org/ops4j/pax/exam/CoreOptions.java#L616}<<<CoreOptions.junitBundles()>>>}}
+  using hardcoded URLs.
+  This is how Pax Exam locates the Maven artifacts to load as bundles into the test OSGi runtime.
+
   Unfortunately, these link files can't be generated directly by
   {{{../generate-test-resources-mojo.html}alta:generate-test-resources}}.
   The reason is that they don't follow a consistent naming convention: some of them
