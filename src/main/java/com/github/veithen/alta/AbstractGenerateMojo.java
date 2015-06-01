@@ -400,6 +400,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     }
     
     private List<PaxExamLink> extractPaxExamLinks(String version) throws MojoExecutionException {
+        Log log = getLog();
         Artifact paxExamLinkArtifact = factory.createDependencyArtifact("org.ops4j.pax.exam", "pax-exam-link-mvn", VersionRange.createFromVersion(version), "jar", null, Artifact.SCOPE_COMPILE);
         try {
             resolver.resolve(paxExamLinkArtifact, project.getRemoteArtifactRepositories(), localRepository);
@@ -436,6 +437,9 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         } catch (IOException ex) {
             throw new MojoExecutionException("Failed to read " + paxExamLinkArtifact.getFile());
+        }
+        if (log.isDebugEnabled()) {
+            getLog().debug("Extracted the following links from " + paxExamLinkArtifact.getId() + ": " + links);
         }
         return links;
     }

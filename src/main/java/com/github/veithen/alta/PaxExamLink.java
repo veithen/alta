@@ -38,4 +38,9 @@ final class PaxExamLink {
     Artifact getArtifact() {
         return artifact;
     }
+
+    @Override
+    public String toString() {
+        return linkName + "->" + artifact.getId();
+    }
 }
