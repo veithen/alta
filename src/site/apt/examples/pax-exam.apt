@@ -89,15 +89,7 @@ public static Option[] configuration() {
   These files can easily be generated using {{{../generate-test-resources-mojo.html}alta:generate-test-resources}} with
   the following configuration:
 
---------------------------------------
-<configuration>
-    <name>%bundle.symbolicName%.link</name>
-    <value>%url%</value>
-    <dependencySet>
-        <scope>test</scope>
-    </dependencySet>
-</configuration>
---------------------------------------
+%{snippet|id=deps-config|file=src/it/pax-exam-2/pom.xml}
 
 * More problems
 
@@ -173,13 +165,7 @@ public static Option[] configuration() {
 
   This means that the desired link files can be generated with the following plugin configuration:
 
---------------------------------------
-<configuration>
-    <name>%paxexam.linkName%</name>
-    <value>%url%</value>
-    <paxExam>${exam.version}</paxExam>
-</configuration>
---------------------------------------
+%{snippet|id=pax-exam-config|file=src/it/pax-exam-2/pom.xml}
 
   
 
