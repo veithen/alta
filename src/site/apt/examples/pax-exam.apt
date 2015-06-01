@@ -167,8 +167,31 @@ public static Option[] configuration() {
 
 %{snippet|id=pax-exam-config|file=src/it/pax-exam-2/pom.xml}
 
-  
+  This leaves us with two configurations: one to generate the link files expected by Pax Exam (to load the
+  bundles required by the framework) and another one to generate the link files for the dependencies of
+  the project (which are then referenced in configuration of the unit test).
+  One approach to set this up in the POM is to use two executions of the
+  {{{../generate-test-resources-mojo.html}alta:generate-test-resources}} goal.
+  However we can also leverage the {{{../generate-test-resources-mojo.html#altName}altName}} parameter
+  together with the fact that <<<paxexam.linkName>>> property is not defined for the second set of artifacts.
+  This is shown in the sample configuration in the next section.
 
 * Sample configuration
 
+  Assume that your project has the following dependency and that this dependency needs to be loaded
+  as an OSGi bundle in your unit test:
+
+%{snippet|id=dependency|file=src/it/pax-exam/pom.xml}
+
+  As additional dependencies you will need <<<pax-exam-junit4>>> as well as your favorite OSGi runtime,
+  <<but not>> <<<pax-exam-link-mvn>>>. For example:
+
+%{snippet|id=pax-exam-dependencies|file=src/it/pax-exam/pom.xml}
+
+  The necessary link files can then be generated using the following plugin configuration:
+
 %{snippet|id=plugin|file=src/it/pax-exam/pom.xml}
+
+  Finally, the unit test configuration would look as in the code snippet already shown earlier:
+
+%{snippet|id=configuration|file=src/it/pax-exam/src/test/java/OsgiTest.java}
