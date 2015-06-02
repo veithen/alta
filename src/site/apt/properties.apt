@@ -39,9 +39,6 @@ Supported properties
 *-------------------------------+--------------------------------------------------------------------+
 | <<<bundle.symbolicName>>>     | The symbolic name if the artifact is an OSGi bundle                |
 *-------------------------------+--------------------------------------------------------------------+
-| <<<bundle.paxexam.linkName>>> | See {{{./examples/pax-exam.html}here}} for a description of this   |
-|                               | property                                                           |
-*-------------------------------+--------------------------------------------------------------------+
 
   Obviously the <<<file>>> and <<<url>>> properties have values that depend on the local build
   environment. They are typically not used with {{{./generate-resources-mojo.html}generate-resources}}.

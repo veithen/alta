@@ -60,6 +60,12 @@
             <version>${exam.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-assembly</artifactId>
+            <version>${exam.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- SNIPPET END: pax-exam-dependencies -->
     </dependencies>
     <build>
@@ -83,13 +89,11 @@
                             <goal>generate-test-resources</goal>
                         </goals>
                         <configuration>
-                            <name>%paxexam.linkName%</name>
-                            <altName>%bundle.symbolicName%.link</altName>
+                            <name>%bundle.symbolicName%.link</name>
                             <value>%url%</value>
                             <dependencySet>
                                 <scope>test</scope>
                             </dependencySet>
-                            <paxExam>${exam.version}</paxExam>
                         </configuration>
                     </execution>
                 </executions>

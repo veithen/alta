@@ -19,12 +19,10 @@
  */
 package com.github.veithen.alta;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -130,28 +126,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         });
         templateCompiler.addPropertyGroup("bundle", bundleGroup);
-        PropertyGroup<Context,PaxExamLink> paxExamGroup = new PropertyGroup<Context,PaxExamLink>(PaxExamLink.class) {
-            @Override
-            public PaxExamLink prepare(Context context) throws EvaluationException {
-                List<PaxExamLink> links = context.getPaxExamLinks();
-                if (links == null) {
-                    throw new EvaluationException("The 'paxexam' property group is not available");
-                }
-                Artifact artifact = context.getArtifact();
-                for (PaxExamLink link : links) {
-                    if (link.getArtifact() == artifact) {
-                        return link;
-                    }
-                }
-                return null;
-            }
-        };
-        paxExamGroup.addProperty("linkName", new Property<PaxExamLink>() {
-            public String evaluate(PaxExamLink link) {
-                return link.getLinkName();
-            }
-        });
-        templateCompiler.addPropertyGroup("paxexam", paxExamGroup);
     }
     
     /**
@@ -159,14 +133,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
      */
     @Parameter(required=true)
     private String name;
-    
-    /**
-     * An alternate destination name template. This is used if the template specified by the
-     * <tt>name</tt> parameter is not resolvable (because it contains a reference to a property
-     * that is not supported for the given artifact).
-     */
-    @Parameter
-    private String altName;
     
     /**
      * The template of the value to generate.
@@ -187,14 +153,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     
     @Parameter
     private ArtifactItem[] artifacts;
-    
-    /**
-     * The Pax Exam version. Setting this parameter has two effects: the artifacts linked by
-     * <tt>pax-exam-link-mvn</tt> will be added to the plug-in configuration and the
-     * <tt>paxexam.linkName</tt> property will be available.
-     */
-    @Parameter
-    private String paxExam;
     
     @Parameter
     private Repository[] repositories;
@@ -227,16 +185,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             nameTemplate = templateCompiler.compile(name);
         } catch (InvalidTemplateException ex) {
             throw new MojoExecutionException("Invalid destination name template", ex);
-        }
-        Template<Context> altNameTemplate;
-        if (altName == null) {
-            altNameTemplate = null;
-        } else {
-            try {
-                altNameTemplate = templateCompiler.compile(altName);
-            } catch (InvalidTemplateException ex) {
-                throw new MojoExecutionException("Invalid altName template", ex);
-            }
         }
         Template<Context> valueTemplate;
         try {
@@ -309,41 +257,16 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         }
         
-        List<PaxExamLink> paxExamLinks;
-        if (paxExam == null) {
-            paxExamLinks = null;
-        } else {
-            paxExamLinks = extractPaxExamLinks(paxExam);
-            for (PaxExamLink link : paxExamLinks) {
-                Artifact artifact = link.getArtifact();
-                try {
-                    resolver.resolve(artifact, project.getRemoteArtifactRepositories(), localRepository);
-                } catch (ArtifactResolutionException ex) {
-                    throw new MojoExecutionException("Unable to resolve artifact", ex);
-                } catch (ArtifactNotFoundException ex) {
-                    throw new MojoExecutionException("Artifact not found", ex);
-                }
-                resolvedArtifacts.add(artifact);
-            }
-        }
-        
         Map<String,String> result = new HashMap<String,String>();
         for (Artifact artifact : resolvedArtifacts) {
             if (log.isDebugEnabled()) {
                 log.debug("Processing artifact " + artifact.getId());
             }
-            Context context = new Context(artifact, paxExamLinks);
+            Context context = new Context(artifact);
             try {
                 String name = nameTemplate.evaluate(context);
                 if (log.isDebugEnabled()) {
                     log.debug("name = " + name);
-                }
-                if (name == null && altNameTemplate != null) {
-                    log.debug("Using altName");
-                    name = altNameTemplate.evaluate(context);
-                    if (log.isDebugEnabled()) {
-                        log.debug("name = " + name);
-                    }
                 }
                 if (name == null) {
                     continue;
@@ -397,51 +320,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         }
         return null;
-    }
-    
-    private List<PaxExamLink> extractPaxExamLinks(String version) throws MojoExecutionException {
-        Log log = getLog();
-        Artifact paxExamLinkArtifact = factory.createDependencyArtifact("org.ops4j.pax.exam", "pax-exam-link-mvn", VersionRange.createFromVersion(version), "jar", null, Artifact.SCOPE_COMPILE);
-        try {
-            resolver.resolve(paxExamLinkArtifact, project.getRemoteArtifactRepositories(), localRepository);
-        } catch (ArtifactResolutionException ex) {
-            throw new MojoExecutionException("Unable to resolve artifact", ex);
-        } catch (ArtifactNotFoundException ex) {
-            throw new MojoExecutionException("Artifact not found", ex);
-        }
-        List<PaxExamLink> links = new ArrayList<PaxExamLink>();
-        try {
-            InputStream in = new FileInputStream(paxExamLinkArtifact.getFile());
-            try {
-                JarInputStream jar = new JarInputStream(in);
-                JarEntry entry;
-                while ((entry = jar.getNextJarEntry()) != null) {
-                    String name = entry.getName();
-                    if (name.startsWith("META-INF/links/") && name.endsWith(".link")) {
-                        String content = new BufferedReader(new InputStreamReader(jar, "utf-8")).readLine();
-                        PaxExamLink link = null;
-                        if (content.startsWith("mvn:")) {
-                            String[] parts = content.substring(4).split("/");
-                            if (parts.length == 3) {
-                                link = new PaxExamLink(name, factory.createDependencyArtifact(parts[0], parts[1], VersionRange.createFromVersion(parts[2]), "jar", null, Artifact.SCOPE_COMPILE));
-                            }
-                        }
-                        if (link == null) {
-                            throw new MojoExecutionException("Failed to parse " + paxExamLinkArtifact.getFile() + ": unexpected content");
-                        }
-                        links.add(link);
-                    }
-                }
-            } finally {
-                in.close();
-            }
-        } catch (IOException ex) {
-            throw new MojoExecutionException("Failed to read " + paxExamLinkArtifact.getFile());
-        }
-        if (log.isDebugEnabled()) {
-            getLog().debug("Extracted the following links from " + paxExamLinkArtifact.getId() + ": " + links);
-        }
-        return links;
     }
     
     protected abstract void process(Map<String,String> result) throws MojoExecutionException, MojoFailureException;

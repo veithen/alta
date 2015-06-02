@@ -24,8 +24,6 @@
 
 Using Pax Exam in Maven builds
 
-* Problems with the traditional approach
-
   The {{{http://wiki.ops4j.org/display/paxexam/Pax+Exam+-+Tutorial+1}recommended approach}}
   (see also {{{http://docs.peergreen.com/peergreen_server/latest/reference/xhtml-single/peergreen-server-osgi-paxexam-junit-guide.xhtml}here}})
   to run OSGi unit tests with Pax Exam in a Maven build relies on the <<<pax-url-aether>>> library.
@@ -76,8 +74,6 @@ public static Option[] configuration() {
   from a Maven repository to a stand-alone OSGi container), but in a Maven build, it should be Maven's responsibility
   to download artifacts, and Pax Exam's role should be limited to provisioning them to the embedded OSGi container.
 
-* (Partial) solution
-
   The {{{https://ops4j1.jira.com/wiki/display/paxurl/Link+Protocol}<<<link:>>> protocol}} (together with the
   {{{https://ops4j1.jira.com/wiki/display/paxurl/Classpath+Protocol}<<<classpath:>>> protocol}}) supported by Pax URL
   comes to our rescue to solve this problem. The idea is to let Maven resolve the artifacts and to generate link
@@ -89,109 +85,15 @@ public static Option[] configuration() {
   These files can easily be generated using {{{../generate-test-resources-mojo.html}alta:generate-test-resources}} with
   the following configuration:
 
-%{snippet|id=deps-config|file=src/it/pax-exam-2/pom.xml}
+%{snippet|id=plugin|file=src/it/pax-exam/pom.xml}
 
-* More problems
-
-  This only solves the problem partially because it doesn't eliminate the usage of the <<<mvn:>>>
-  protocol entirely.
-  The reason is that even with the project setup described above, <<<pax-exam-link-mvn>>> is still
-  a required dependency. That JAR contains a set of link files that refer to Maven artifacts using
-  the <<<mvn:>>> protocol. E.g. the following table shows the name of the link files and their content
-  in Pax Exam 4.5.0:
-
-*--+--+
-| <<<META-INF/links/ch.qos.logback.classic.link>>> | <<<mvn:ch.qos.logback/logback-classic/1.0.7>>> |
-*--+--+
-| <<<META-INF/links/ch.qos.logback.core.link>>> | <<<mvn:ch.qos.logback/logback-core/1.0.7>>> |
-*--+--+
-| <<<META-INF/links/org.apache.geronimo.specs.atinject.link>>> | <<<mvn:org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.base.link>>> | <<<mvn:org.ops4j.base/ops4j-base/1.5.0>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.exam.inject.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-inject/4.5.0>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.exam.invoker.junit.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-invoker-junit/4.5.0>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.exam.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam/4.5.0>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.exam.rbc.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-container-rbc/4.5.0>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.extender.service.link>>> | <<<mvn:org.ops4j.pax.exam/pax-exam-extender-service/4.5.0>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.logging.api.link>>> | <<<mvn:org.ops4j.pax.logging/pax-logging-api/1.8.2>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.swissbox.core.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-core/1.8.1>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.swissbox.extender.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-extender/1.8.1>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.swissbox.framework.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-framework/1.8.1>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.swissbox.lifecycle.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle/1.8.1>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.swissbox.tracker.link>>> | <<<mvn:org.ops4j.pax.swissbox/pax-swissbox-tracker/1.8.1>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.tipi.hamcrest.core.link>>> | <<<mvn:org.ops4j.pax.tipi/org.ops4j.pax.tipi.hamcrest.core/1.3.0.1>>> |
-*--+--+
-| <<<META-INF/links/org.ops4j.pax.tipi.junit.link>>> | <<<mvn:org.ops4j.pax.tipi/org.ops4j.pax.tipi.junit/4.12.0.1>>> |
-*--+--+
-| <<<META-INF/links/org.osgi.compendium.link>>> | <<<mvn:org.osgi/org.osgi.compendium/4.3.1>>> |
-*--+--+
-| <<<META-INF/links/org.slf4j.api.link>>> | <<<mvn:org.slf4j/slf4j-api/1.6.6>>> |
-*--+--+
-
-  These link files are referenced in
-  {{{https://github.com/ops4j/org.ops4j.pax.exam2/blob/master/core/pax-exam-spi/src/main/java/org/ops4j/pax/exam/spi/PaxExamRuntime.java#L189}<<<PaxExamRuntime.defaultTestSystemOptions()>>>}} and
-  {{{https://github.com/ops4j/org.ops4j.pax.exam2/blob/exam-reactor-4.5.0/core/pax-exam/src/main/java/org/ops4j/pax/exam/CoreOptions.java#L616}<<<CoreOptions.junitBundles()>>>}}
-  using hardcoded URLs.
-  This is how Pax Exam locates the core bundles to be loaded into the test OSGi runtime.
-
-  To remove the <<<pax-exam-link-mvn>>> dependency, we need to generate replacement link files that use the
-  same names as above, but that point directly to artifacts in the local Maven repository.
-
-  Unfortunately, these link files don't follow a consistent naming convention: some of them
-  use the symbolic name (i.e. they could be generated using <<<META-INF/links/%bundle.symbolicName%.link>>> as
-  name template), but some don't. This means that they can't be generated by
-  {{{../generate-test-resources-mojo.html}alta:generate-test-resources}} using a standard configuration.
-  Instead, the plugin has special support for the Pax Exam use case. That support is enabled by setting the
-  {{{../generate-test-resources-mojo.html#paxExam}paxExam}} parameter to the version of Pax Exam used in the project.
-  Doing this has two effects:
-
-    [[1]] All the artifacts linked by <<<pax-exam-link-mvn>>> (i.e. all the Maven artifacts in the right hand side column
-          in the table shown above) will be added to the {{{../artifact-sets.html}set of artifacts processed by the plugin}}.
-
-    [[2]] For these artifacts, the <<<paxexam.linkName>>> property will be set to the link name,
-          i.e. the entry in the left hand side column in the table shown above.
-
-  This means that the desired link files can be generated with the following plugin configuration:
-
-%{snippet|id=pax-exam-config|file=src/it/pax-exam-2/pom.xml}
-
-  This leaves us with two configurations: one to generate the link files expected by Pax Exam (to load the
-  bundles required by the framework) and another one to generate the link files for the dependencies of
-  the project (which are then referenced in configuration of the unit test).
-  One approach to set this up in the POM is to use two executions of the
-  {{{../generate-test-resources-mojo.html}alta:generate-test-resources}} goal.
-  However we can also leverage the {{{../generate-test-resources-mojo.html#altName}altName}} parameter
-  together with the fact that <<<paxexam.linkName>>> property is not defined for the second set of artifacts.
-  This is shown in the sample configuration in the next section.
-
-* Sample configuration
-
-  Assume that your project has the following dependency and that this dependency needs to be loaded
-  as an OSGi bundle in your unit test:
+  This configuration assumes that the bundle to be deployed is declared as a dependency in scope
+  compile or test in the POM:
 
 %{snippet|id=dependency|file=src/it/pax-exam/pom.xml}
 
-  As additional dependencies you will need <<<pax-exam-junit4>>> as well as your favorite OSGi runtime,
-  <<but not>> <<<pax-exam-link-mvn>>>. For example:
+  Note that this approach completely eliminates the usage of the <<<mvn:>>> protocal only if you
+  use <<<pax-exam-link-assembly>>> instead of <<<pax-exam-link-mvn>>>.
+  This means that the other dependencies of your project should look something like this:
 
 %{snippet|id=pax-exam-dependencies|file=src/it/pax-exam/pom.xml}
-
-  The necessary link files can then be generated using the following plugin configuration:
-
-%{snippet|id=plugin|file=src/it/pax-exam/pom.xml}
-
-  Finally, the unit test configuration would look as in the code snippet already shown earlier:
-
-%{snippet|id=configuration|file=src/it/pax-exam/src/test/java/OsgiTest.java}
