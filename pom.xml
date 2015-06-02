@@ -4,7 +4,7 @@
 
     <groupId>com.github.veithen.alta</groupId>
     <artifactId>alta-maven-plugin</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>maven-plugin</packaging>
 
     <name>Alta Maven Plugin</name>
@@ -32,7 +32,7 @@
         <url>https://github.com/veithen/alta</url>
         <connection>scm:git:http://github.com/veithen/alta.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/alta.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>alta-maven-plugin-0.2</tag>
   </scm>
     <distributionManagement>
         <snapshotRepository>
