@@ -92,7 +92,7 @@ META-INF/versions/org.apache.httpcomponents/httpcore
 
   Obviously, the template specified for the key may yield the same value for multiple artifacts.
   In some cases it even makes sense to use a fixed value. The plugin joins multiple values for the same key
-  using a configurable separator. {{{./examples/bootclasspath.apt}One of the samples}} shows how this
+  using a configurable separator. {{{./examples/bootclasspath.html}One of the samples}} shows how this
   can be used to join information from multiple artifacts into a single Maven project property.
   Note that a duplicate key results in an error if no separator is specified.
 
