@@ -32,8 +32,8 @@
         <url>https://github.com/veithen/alta</url>
         <connection>scm:git:http://github.com/veithen/alta.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/alta.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
