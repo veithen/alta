@@ -48,6 +48,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.scm.id>github</project.scm.id>
         <maven.version>3.0</maven.version>
         <maven-plugin-plugin.version>3.3</maven-plugin-plugin.version>
     </properties>
@@ -308,6 +309,9 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <passphraseServerId>sonatype-oss-release</passphraseServerId>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
