@@ -24,6 +24,15 @@
         <artifactId>maven-fluido-skin</artifactId>
         <version>1.4</version>
     </skin>
+    <custom>
+        <fluidoSkin>
+            <gitHub>
+                <projectId>veithen/alta</projectId>
+                <ribbonOrientation>right</ribbonOrientation>
+                <ribbonColor>gray</ribbonColor>
+            </gitHub>
+        </fluidoSkin>
+    </custom>
     <body>
         <head>
             <script>
