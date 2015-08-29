@@ -24,24 +24,26 @@
 
 Supported properties
 
-*-------------------------------+--------------------------------------------------------------------+
-|| Property                     || Description                                                       |
-*-------------------------------+--------------------------------------------------------------------+
-| <<<groupId>>>                 | The Maven group ID                                                 |
-*-------------------------------+--------------------------------------------------------------------+
-| <<<artifactId>>>              | The Maven artifact ID                                              |
-*-------------------------------+--------------------------------------------------------------------+
-| <<<version>>>                 | The Maven version                                                  |
-*-------------------------------+--------------------------------------------------------------------+
-| <<<file>>>                    | The full path of the artifact in the local Maven repository        |
-*-------------------------------+--------------------------------------------------------------------+
-| <<<url>>>                     | A <<<file://>>> URL for the artifact in the local Maven repository |
-*-------------------------------+--------------------------------------------------------------------+
-| <<<bundle.symbolicName>>>     | The symbolic name if the artifact is an OSGi bundle                |
-*-------------------------------+--------------------------------------------------------------------+
+*-------------------------------+-----------------------------------------------------+
+|| Property                     || Description                                        |
+*-------------------------------+-----------------------------------------------------+
+| <<<groupId>>>                 | The Maven group ID                                  |
+*-------------------------------+-----------------------------------------------------+
+| <<<artifactId>>>              | The Maven artifact ID                               |
+*-------------------------------+-----------------------------------------------------+
+| <<<version>>>                 | The Maven version                                   |
+*-------------------------------+-----------------------------------------------------+
+| <<<file>>>                    | The full path of the artifact                       |
+*-------------------------------+-----------------------------------------------------+
+| <<<url>>>                     | A <<<file://>>> URL for the artifact                |
+*-------------------------------+-----------------------------------------------------+
+| <<<bundle.symbolicName>>>     | The symbolic name if the artifact is an OSGi bundle |
+*-------------------------------+-----------------------------------------------------+
 
   Obviously the <<<file>>> and <<<url>>> properties have values that depend on the local build
-  environment. They are typically not used with {{{./generate-resources-mojo.html}generate-resources}}.
+  environment. They will point to locations in the local Maven repository or the current reactor.
+  Therefore these properties are typically not used with
+  {{{./generate-resources-mojo.html}generate-resources}}.
 
   As mentioned in the {{{./index.html#Unresolvable_properties}introduction}}, the <<<bundle.*>>>
   properties are only defined for Maven artifacts that are also OSGi bundles.
