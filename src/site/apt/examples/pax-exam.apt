@@ -69,6 +69,12 @@ public static Option[] configuration() {
   
   Probably this list is not exhaustive and there are other POM settings that will cause similar problems.
   
+  Another problem is that when building a multi-module project with <<<mvn clean verify>>> (instead of <<<mvn clean install>>>),
+  instead of resolving bundles from the reactor, <<<pax-url-aether>>> will either use potentially outdated artifacts from
+  the local (or a remote) repository or fail because it can't find them. As described
+  {{{https://groups.google.com/d/topic/ops4j/EXtrOLSAWG8/discussion}here}}, this causes <<<maven-release-plugin>>> to fail during
+  release preparation, unless the <<<preparationGoals>>> parameter is overridden with <<<clean install>>>.
+
   Actually the whole approach of having Pax Exam resolve Maven dependencies on its own is questionable.
   This is certainly a very useful feature when used outside of a Maven build (e.g. to provision bundles directly
   from a Maven repository to a stand-alone OSGi container), but in a Maven build, it should be Maven's responsibility
