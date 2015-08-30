@@ -49,6 +49,7 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -60,6 +61,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.apache.maven.project.artifact.MavenMetadataSource;
 import org.apache.maven.repository.RepositorySystem;
+import org.codehaus.plexus.util.StringUtils;
 
 import com.github.veithen.alta.template.EvaluationException;
 import com.github.veithen.alta.template.InvalidTemplateException;
@@ -233,14 +235,18 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 effectiveRepositories = pomRepositories;
             }
             for (ArtifactItem artifactItem : artifacts) {
-                VersionRange version;
+                String version = artifactItem.getVersion();
+                if (StringUtils.isEmpty(version)) {
+                    version = getMissingArtifactVersion(artifactItem);
+                }
+                VersionRange versionRange;
                 try {
-                    version = VersionRange.createFromVersionSpec(artifactItem.getVersion());
+                    versionRange = VersionRange.createFromVersionSpec(version);
                 } catch (InvalidVersionSpecificationException ex) {
                     throw new MojoExecutionException("Invalid version specified for artifact " + artifactItem.getGroupId() + ":" + artifactItem.getArtifactId(), ex);
                 }
                 Artifact artifact = factory.createDependencyArtifact(artifactItem.getGroupId(), artifactItem.getArtifactId(),
-                        version, artifactItem.getType(), artifactItem.getClassifier(), Artifact.SCOPE_COMPILE);
+                        versionRange, artifactItem.getType(), artifactItem.getClassifier(), Artifact.SCOPE_COMPILE);
                 try {
                     // Find an appropriate version in the specified version range
                     ArtifactResolutionResult artifactResolutionResult = artifactCollector.collect(Collections.singleton(artifact), project.getArtifact(), localRepository, effectiveRepositories, artifactMetadataSource, null, Collections.EMPTY_LIST);
@@ -294,6 +300,41 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         process(result);
     }
     
+    private String getMissingArtifactVersion(ArtifactItem artifact) throws MojoExecutionException {
+        List<Dependency> dependencies = project.getDependencies();
+        List<Dependency> managedDependencies = project.getDependencyManagement() == null ? null
+                : project.getDependencyManagement().getDependencies();
+        String version = findDependencyVersion(artifact, dependencies, false);
+        if (version == null && managedDependencies != null) {
+            version = findDependencyVersion(artifact, managedDependencies, false);
+        }
+        if (version == null) {
+            version = findDependencyVersion(artifact, dependencies, true);
+        }
+        if (version == null && managedDependencies != null) {
+            version = findDependencyVersion(artifact, managedDependencies, true);
+        }
+        if (version == null) {
+            throw new MojoExecutionException(
+                "Unable to find artifact version of " + artifact.getGroupId() + ":" + artifact.getArtifactId()
+                    + " in either dependency list or in project's dependency management." );
+        } else {
+            return version;
+        }
+    }
+
+    private String findDependencyVersion(ArtifactItem artifact, List<Dependency> dependencies, boolean looseMatch) {
+        for (Dependency dependency : dependencies) {
+            if (StringUtils.equals(dependency.getArtifactId(), artifact.getArtifactId())
+                && StringUtils.equals(dependency.getGroupId(), artifact.getGroupId())
+                && (looseMatch || StringUtils.equals(dependency.getClassifier(), artifact.getClassifier()))
+                && (looseMatch || StringUtils.equals(dependency.getType(), artifact.getType()))) {
+                return dependency.getVersion();
+            }
+        }
+        return null;
+    }
+
     static Bundle extractBundleMetadata(File file) throws IOException {
         Manifest manifest = null;
         InputStream in = new FileInputStream(file);

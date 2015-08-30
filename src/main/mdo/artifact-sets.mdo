@@ -107,9 +107,9 @@
                     <name>version</name>
                     <version>1.0.0+</version>
                     <type>String</type>
-                    <required>true</required>
+                    <required>false</required>
                     <description>
-                        The artifact version.
+                        The artifact version. If not specified, the plugin will attempt to determine the version from the dependencies of the project.
                     </description>
                 </field>
                 <field>
