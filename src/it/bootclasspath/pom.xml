@@ -55,7 +55,7 @@
                             <goal>generate-properties</goal>
                         </goals>
                         <configuration>
-                            <name>bootclasspath</name>
+                            <name>surefire.bootclasspath</name>
                             <value>%file%</value>
                             <separator>${path.separator}</separator>
                             <artifacts>
@@ -77,7 +77,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Xbootclasspath/p:${bootclasspath}</argLine>
+                    <argLine>-Xbootclasspath/p:${surefire.bootclasspath}</argLine>
                 </configuration>
             </plugin>
         </plugins>

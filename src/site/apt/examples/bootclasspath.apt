@@ -48,3 +48,8 @@ Configuring endorsed libraries in unit tests
   {{{../generate-properties-mojo.html}alta:generate-properties}} goal:
 
 %{snippet|id=plugins|file=src/it/bootclasspath/pom.xml}
+
+  <<Note:>> This configuration uses <<<surefire.bootclasspath>>> as property name. You should
+  avoid using <<<bootclasspath>>> here because that property is used as a default value
+  for the {{{https://maven.apache.org/plugins/maven-javadoc-plugin/jar-mojo.html#bootclasspath}<<<bootclasspath>>>}}
+  parameter by <<<maven-javadoc-plugin>>>.
