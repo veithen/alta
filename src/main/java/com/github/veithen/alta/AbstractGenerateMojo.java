@@ -150,6 +150,14 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     @Parameter
     private String separator;
     
+    /**
+     * Skip plugin execution completely.
+     *
+     * @since 0.3
+     */
+    @Parameter(defaultValue = "false")
+    private boolean skip;
+    
     @Parameter
     private DependencySet dependencySet;
     
@@ -182,6 +190,10 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     
     public final void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
+        if (skip) {
+            log.info("Skipping plugin execution");
+            return;
+        }
         Template<Context> nameTemplate;
         try {
             nameTemplate = templateCompiler.compile(name);
