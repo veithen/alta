@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20150830" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Alta Maven Plugin - Configuring endorsed libraries in unit tests</title>
+    <title>Alta Maven Plugin - Configuring Surefire Plugin with AspectJ load-time weaving</title>
     <link rel="stylesheet" href="../css/apache-maven-fluido-1.4.min.css" />
     <link rel="stylesheet" href="../css/site.css" />
     <link rel="stylesheet" href="../css/print.css" media="print" />
@@ -109,10 +109,12 @@
             </li>
                               <li class="nav-header">Examples</li>
                               
-      <li class="active">
+      <li>
   
-            <a href="#"><span class="none"></span>Configuring endorsed libraries in unit tests</a>
-          </li>
+                          <a href="../examples/bootclasspath.html" title="Configuring endorsed libraries in unit tests">
+          <span class="none"></span>
+        Configuring endorsed libraries in unit tests</a>
+            </li>
                 
       <li>
   
@@ -121,12 +123,10 @@
         Using Pax Exam in Maven builds</a>
             </li>
                 
-      <li>
+      <li class="active">
   
-                          <a href="../examples/agent.html" title="Configuring Surefire Plugin with AspectJ load-time weaving">
-          <span class="none"></span>
-        Configuring Surefire Plugin with AspectJ load-time weaving</a>
-            </li>
+            <a href="#"><span class="none"></span>Configuring Surefire Plugin with AspectJ load-time weaving</a>
+          </li>
                               <li class="nav-header">Project Information</li>
                               
       <li>
@@ -157,11 +157,8 @@
         <div id="bodyColumn"  class="span10" >
                                   
             <!-- ~ --><!-- #%L --><!-- Alta Maven Plugin --><!-- %% --><!-- Copyright (C) 2014 - 2015 Andreas Veithen --><!-- %% --><!-- Licensed under the Apache License, Version 2.0 (the "License"); --><!-- you may not use this file except in compliance with the License. --><!-- You may obtain a copy of the License at --><!--  --><!-- http://www.apache.org/licenses/LICENSE-2.0 --><!--  --><!-- Unless required by applicable law or agreed to in writing, software --><!-- distributed under the License is distributed on an "AS IS" BASIS, --><!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. --><!-- See the License for the specific language governing permissions and --><!-- limitations under the License. --><!-- #L% --><!-- ~ --><div class="section">
-<h2>Configuring endorsed libraries in unit tests<a name="Configuring_endorsed_libraries_in_unit_tests"></a></h2>
-<p>In some cases, you need to run your unit tests with certain APIs at a different version level than what is provided by the JRE, either because you want to ensure that your code is compatible with older versions of these APIs or because the versions of the APIs included in the JRE are not the most recent ones, but your code expects the latest versions.</p>
-<p>In a Maven build this is typically achieved by using <a class="externalLink" href="http://maven.apache.org/plugins/maven-dependency-plugin/">maven-dependency-plugin</a> to copy these libraries to a folder under <tt>target/</tt> and configuring <a class="externalLink" href="http://maven.apache.org/surefire/maven-surefire-plugin/">maven-surefire-plugin</a> to add <tt>-Djava.endorsed.dirs=...</tt> (with the directory containing the JARs) or <tt>-Xbootclasspath/p:...</tt> (with the list of individual JARs) to the command line of the JVM that executes the tests.</p>
-<p>Copying the JARs to the project build directory is an extra step that should not be necessary, considering that the JARs are already in the local Maven repository. To avoid this extra step, one needs to compute the paths to the artifacts in the local repository and pass the list of these paths to the <tt>-Xbootclasspath/p:...</tt> JVM argument.</p>
-<p>This can easily be achieved with the help of the <a href="../generate-properties-mojo.html">alta:generate-properties</a> goal:</p>
+<h2>Configuring Surefire Plugin with AspectJ load-time weaving<a name="Configuring_Surefire_Plugin_with_AspectJ_load-time_weaving"></a></h2>
+<p>Executing unit tests with <a class="externalLink" href="https://eclipse.org/aspectj/doc/released/devguide/ltw.html">AspectJ load-time weaving</a> enabled requires configuring <tt>maven-surefire-plugin</tt> to add a <tt>-javaagent</tt> option to the JVM arguments that sets up the <tt>aspectjweaver</tt> library as a JVM agent. This use case is similar to <a href="./bootclasspath.html">configuring endorsed libraries</a>, and the necessary configuration looks like this:</p>
 <div class="source"><pre class="prettyprint">&lt;plugins&gt;
     &lt;plugin&gt;
         &lt;groupId&gt;com.github.veithen.alta&lt;/groupId&gt;
@@ -172,19 +169,12 @@
                     &lt;goal&gt;generate-properties&lt;/goal&gt;
                 &lt;/goals&gt;
                 &lt;configuration&gt;
-                    &lt;name&gt;bootclasspath&lt;/name&gt;
+                    &lt;name&gt;aspectjweaver&lt;/name&gt;
                     &lt;value&gt;%file%&lt;/value&gt;
-                    &lt;separator&gt;${path.separator}&lt;/separator&gt;
                     &lt;artifacts&gt;
                         &lt;artifact&gt;
-                            &lt;groupId&gt;xerces&lt;/groupId&gt;
-                            &lt;artifactId&gt;xmlParserAPIs&lt;/artifactId&gt;
-                            &lt;version&gt;2.6.2&lt;/version&gt;
-                        &lt;/artifact&gt;
-                        &lt;artifact&gt;
-                            &lt;groupId&gt;org.apache.axis&lt;/groupId&gt;
-                            &lt;artifactId&gt;axis-saaj&lt;/artifactId&gt;
-                            &lt;version&gt;1.4&lt;/version&gt;
+                            &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+                            &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;
                         &lt;/artifact&gt;
                     &lt;/artifacts&gt;
                 &lt;/configuration&gt;
@@ -194,10 +184,26 @@
     &lt;plugin&gt;
         &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
         &lt;configuration&gt;
-            &lt;argLine&gt;-Xbootclasspath/p:${bootclasspath}&lt;/argLine&gt;
+            &lt;argLine&gt;-javaagent:${aspectjweaver}&lt;/argLine&gt;
         &lt;/configuration&gt;
     &lt;/plugin&gt;
 &lt;/plugins&gt;
+</pre></div>
+<p>The plugin configuration shown above doesn't specify the version of the <tt>org.aspectj:aspectjweaver</tt> artifact. In this case, the plugin will determine the version from the dependencies or the dependency management configuration of the project (This feature is supported starting with version 0.3 of the plugin). For AspectJ you would typically add the following configuration to the project or its parent POM, in order to select compatible versions of the weaver and the AspectJ runtime library (the latter being required as a test dependency of the project):</p>
+<div class="source"><pre class="prettyprint">&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+            &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;
+            &lt;version&gt;1.8.2&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+            &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;
+            &lt;version&gt;1.8.2&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
 </pre></div></div>
                   </div>
             </div>
