@@ -47,3 +47,6 @@ Supported properties
 
   As mentioned in the {{{./index.html#Unresolvable_properties}introduction}}, the <<<bundle.*>>>
   properties are only defined for Maven artifacts that are also OSGi bundles.
+
+  For artifacts that are part of the reactor, evaluation of the <<<file>>>, <<<url>>> and
+  <<<bundle.*>>> properties will fail if the <<<package>>> phase has not been executed.

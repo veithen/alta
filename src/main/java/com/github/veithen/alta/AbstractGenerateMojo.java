@@ -97,16 +97,16 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         });
         artifactGroup.addProperty("file", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) {
-                return artifact.getFile().getPath();
+            public String evaluate(Artifact artifact) throws EvaluationException {
+                return getArtifactFile(artifact).getPath();
             }
         });
         artifactGroup.addProperty("url", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) {
+            public String evaluate(Artifact artifact) throws EvaluationException {
                 try {
-                    return artifact.getFile().toURI().toURL().toString();
+                    return getArtifactFile(artifact).toURI().toURL().toString();
                 } catch (MalformedURLException ex) {
-                    throw new Error("Unexpected exception", ex);
+                    throw new EvaluationException("Unexpected exception", ex);
                 }
             }
         });
@@ -114,12 +114,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         PropertyGroup<Context,Bundle> bundleGroup = new PropertyGroup<Context,Bundle>(Bundle.class) {
             @Override
             public Bundle prepare(Context context) throws EvaluationException {
-                File file = context.getArtifact().getFile();
-                try {
-                    return extractBundleMetadata(file);
-                } catch (IOException ex) {
-                    throw new EvaluationException("Failed to read " + file, ex);
-                }
+                return extractBundleMetadata(context.getArtifact());
             }
         };
         bundleGroup.addProperty("symbolicName", new Property<Bundle>() {
@@ -306,7 +301,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 }
                 result.put(name, currentValue);
             } catch (EvaluationException ex) {
-                throw new MojoExecutionException("Failed to process artifact " + artifact.getId(), ex);
+                throw new MojoExecutionException("Failed to process artifact " + artifact.getId() + ": " + ex.getMessage(), ex);
             }
         }
         process(result);
@@ -347,32 +342,46 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         return null;
     }
 
-    static Bundle extractBundleMetadata(File file) throws IOException {
-        Manifest manifest = null;
-        InputStream in = new FileInputStream(file);
+    static File getArtifactFile(Artifact artifact) throws EvaluationException {
+        File file = artifact.getFile();
+        if (file.isFile()) {
+            return file;
+        } else {
+            throw new EvaluationException("Artifact has not been packaged yet; it is part of the reactor, but the package phase has not been executed.");
+        }
+    }
+    
+    static Bundle extractBundleMetadata(Artifact artifact) throws EvaluationException {
+        File file = getArtifactFile(artifact);
         try {
-            ZipInputStream zip = new ZipInputStream(in);
-            ZipEntry entry;
-            while ((entry = zip.getNextEntry()) != null) {
-                if (entry.getName().equals("META-INF/MANIFEST.MF")) {
-                    manifest = new Manifest(zip);
-                    break;
+            Manifest manifest = null;
+            InputStream in = new FileInputStream(file);
+            try {
+                ZipInputStream zip = new ZipInputStream(in);
+                ZipEntry entry;
+                while ((entry = zip.getNextEntry()) != null) {
+                    if (entry.getName().equals("META-INF/MANIFEST.MF")) {
+                        manifest = new Manifest(zip);
+                        break;
+                    }
+                }
+            } finally {
+                in.close();
+            }
+            if (manifest != null) {
+                String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
+                if (symbolicName != null) {
+                    int idx = symbolicName.indexOf(';');
+                    if (idx != -1) {
+                        symbolicName = symbolicName.substring(0, idx);
+                    }
+                    return new Bundle(symbolicName.trim());
                 }
             }
-        } finally {
-            in.close();
+            return null;
+        } catch (IOException ex) {
+            throw new EvaluationException("Failed to read " + file, ex);
         }
-        if (manifest != null) {
-            String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
-            if (symbolicName != null) {
-                int idx = symbolicName.indexOf(';');
-                if (idx != -1) {
-                    symbolicName = symbolicName.substring(0, idx);
-                }
-                return new Bundle(symbolicName.trim());
-            }
-        }
-        return null;
     }
     
     protected abstract void process(Map<String,String> result) throws MojoExecutionException, MojoFailureException;

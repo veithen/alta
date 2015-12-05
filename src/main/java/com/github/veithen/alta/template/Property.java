@@ -20,5 +20,5 @@
 package com.github.veithen.alta.template;
 
 public interface Property<GC> {
-    String evaluate(GC groupContext);
+    String evaluate(GC groupContext) throws EvaluationException;
 }
