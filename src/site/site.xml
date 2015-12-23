@@ -47,7 +47,12 @@
         </head>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Goals" href="plugin-info.html"/>
+            <item name="Goals" href="plugin-info.html">
+                <item name="generate-files" href="generate-files-mojo.html"/>
+                <item name="generate-properties" href="generate-properties-mojo.html"/>
+                <item name="generate-resources" href="generate-resources-mojo.html"/>
+                <item name="generate-test-resources" href="generate-test-resources-mojo.html"/>
+            </item>
             <item name="Supported properties" href="properties.html"/>
             <item name="Artifact set configuration" href="artifact-sets.html"/>
         </menu>
