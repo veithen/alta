@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20160109" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Alta Maven Plugin - Using Pax Exam in Maven builds</title>
+    <title>Alta Maven Plugin - Single module Pax Exam configuration</title>
     <link rel="stylesheet" href="../css/apache-maven-fluido-1.4.min.css" />
     <link rel="stylesheet" href="../css/site.css" />
     <link rel="stylesheet" href="../css/print.css" media="print" />
@@ -146,17 +146,17 @@
         Configuring endorsed libraries in unit tests</a>
             </li>
                 
-      <li class="active">
-  
-            <a href="#"><span class="none"></span>Using Pax Exam in Maven builds</a>
-          </li>
-                
       <li>
   
-                          <a href="../examples/pax-exam-single-module.html" title="Single module Pax Exam configuration">
+                          <a href="../examples/pax-exam.html" title="Using Pax Exam in Maven builds">
           <span class="none"></span>
-        Single module Pax Exam configuration</a>
+        Using Pax Exam in Maven builds</a>
             </li>
+                
+      <li class="active">
+  
+            <a href="#"><span class="none"></span>Single module Pax Exam configuration</a>
+          </li>
                 
       <li>
   
@@ -194,85 +194,56 @@
         <div id="bodyColumn"  class="span10" >
                                   
             <!-- ~ --><!-- #%L --><!-- Alta Maven Plugin --><!-- %% --><!-- Copyright (C) 2014 - 2016 Andreas Veithen --><!-- %% --><!-- Licensed under the Apache License, Version 2.0 (the "License"); --><!-- you may not use this file except in compliance with the License. --><!-- You may obtain a copy of the License at --><!--  --><!-- http://www.apache.org/licenses/LICENSE-2.0 --><!--  --><!-- Unless required by applicable law or agreed to in writing, software --><!-- distributed under the License is distributed on an "AS IS" BASIS, --><!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. --><!-- See the License for the specific language governing permissions and --><!-- limitations under the License. --><!-- #L% --><!-- ~ --><div class="section">
-<h2>Using Pax Exam in Maven builds<a name="Using_Pax_Exam_in_Maven_builds"></a></h2>
-<p>The <a class="externalLink" href="http://wiki.ops4j.org/display/paxexam/Pax+Exam+-+Tutorial+1">recommended approach</a> (see also <a class="externalLink" href="http://docs.peergreen.com/peergreen_server/latest/reference/xhtml-single/peergreen-server-osgi-paxexam-junit-guide.xhtml">here</a>) to run OSGi unit tests with Pax Exam in a Maven build relies on the <tt>pax-url-aether</tt> library. This library allows to resolve Maven artifacts and to provision them as bundles to the OSGi runtime started by Pax Exam. Assuming that the bundles to be provisioned are declared as Maven dependencies in the project, a typical Pax Exam configuration would look as follows (Note that <tt>asInProject()</tt> relies on the execution of the <tt>org.apache.servicemix.tooling:depends-maven-plugin</tt> during the build):</p>
-<div>
-<pre>@Configuration
-public static Option[] configuration() {
-    return options(
-        mavenBundle().groupId(&quot;org.apache.felix&quot;)
-                     .artifactId(&quot;org.apache.felix.configadmin&quot;)
-                     .version(asInProject()),
-        junitBundles());
-}</pre></div>
-<p>While at first glance this looks straightforward and natural, there are a couple of issues with this approach. The problem is that <tt>pax-url-aether</tt> creates its own Maven session to resolve artifacts, thereby bypassing the underlying Maven build. This means that the resolution performed by Pax Exam doesn't necessarily use the same configuration as the Maven build. There are several known circumstances where this causes problems:</p>
-<ol style="list-style-type: decimal">
-<li>Repositories configured in the POM. Some have <a class="externalLink" href="https://groups.google.com/forum/#!msg/ops4j/kRxAXidbt7A/w0i6tM1Mn9MJ">argued</a> that declaring repositories in POMs is discouraged. That argument is correct for repositories containing release artifacts, but not for snapshot repositories: all release dependencies should indeed be available from the central repository, but dependencies on snapshot versions from upstream projects necessarily require configuration of additional repositories. The right place to configure these repositories is in the POM, not in <tt>settings.xml</tt>.</li>
-<li>The location of the local Maven repository (normally specified in <tt>settings.xml</tt>) can be overridden using the <tt>maven.repo.local</tt> system property. However, Pax Exam only looks at <tt>settings.xml</tt>. While overriding the local Maven repository on the command line is rarely done when running Maven manually, it is quite common for builds executed by a CI tool. E.g. Jenkins has a &quot;Use private Maven repository&quot; option that does exactly that (with a local repository in the Jenkins workspace). This problem is described in <a class="externalLink" href="https://ops4j1.jira.com/browse/PAXEXAM-543">PAXEXAM-543</a>.</li>
-<li>Offline mode. This mode is enabled using the <tt>-o</tt> switch on the <tt>mvn</tt> command, but Pax Exam has no way to detect this and will continue trying to access remote Maven repositories.</li></ol>
-<p>Probably this list is not exhaustive and there are other POM settings that will cause similar problems.</p>
-<p>Another problem is that when building a multi-module project with <tt>mvn clean verify</tt> (instead of <tt>mvn clean install</tt>), instead of resolving bundles from the reactor, <tt>pax-url-aether</tt> will either use potentially outdated artifacts from the local (or a remote) repository or fail because it can't find them. As described <a class="externalLink" href="https://groups.google.com/d/topic/ops4j/EXtrOLSAWG8/discussion">here</a>, this causes <tt>maven-release-plugin</tt> to fail during release preparation, unless the <tt>preparationGoals</tt> parameter is overridden with <tt>clean install</tt>.</p>
-<p>Actually the whole approach of having Pax Exam resolve Maven dependencies on its own is questionable. This is certainly a very useful feature when used outside of a Maven build (e.g. to provision bundles directly from a Maven repository to a stand-alone OSGi container), but in a Maven build, it should be Maven's responsibility to download artifacts, and Pax Exam's role should be limited to provisioning them to the embedded OSGi container.</p>
-<p>The <a class="externalLink" href="https://ops4j1.jira.com/wiki/display/paxurl/Link+Protocol"><tt>link:</tt> protocol</a> (together with the <a class="externalLink" href="https://ops4j1.jira.com/wiki/display/paxurl/Classpath+Protocol"><tt>classpath:</tt> protocol</a>) supported by Pax URL comes to our rescue to solve this problem. The idea is to let Maven resolve the artifacts and to generate link files that contain <tt>file:</tt> URLs to the bundles in the local Maven repository. They can then be deployed using <tt>url</tt> options:</p>
-<div class="source"><pre class="prettyprint">@Configuration
-public static Option[] configuration() {
-    return options(
-        url(&quot;link:classpath:org.apache.felix.configadmin.link&quot;),
-        junitBundles());
-}
-</pre></div>
-<p>These files can easily be generated using <a href="../generate-test-resources-mojo.html">alta:generate-test-resources</a> with the following configuration:</p>
+<h2>Single module Pax Exam configuration<a name="Single_module_Pax_Exam_configuration"></a></h2>
+<p>The Pax Exam setup shown in the <a href="./pax-exam.html">previous example</a> works well for multi-module Maven projects with a dedicated Maven module for OSGi integration tests. However it is often desirable to execute the tests directly in the Maven module that builds the bundle being tested. That's especially true for small projects that could be implemented as single-module Maven projects.</p>
+<p>It is important to remember that OSGi tests only work with fully packaged artifacts. To execute them in the same module, we need to configure them as integration tests executed by <a class="externalLink" href="http://maven.apache.org/surefire/maven-failsafe-plugin/"><tt>maven-failsafe-plugin</tt></a> (rather than unit tests executed by <a class="externalLink" href="http://maven.apache.org/surefire/maven-surefire-plugin/"><tt>maven-surefire-plugin</tt></a>. In addition to that, we need to generate a link file for the bundle built by the current module. This can be achieved by setting the <tt>useProjectArtifact</tt> option to <tt>true</tt> in the <a href="../artifact-sets.html#class_dependencySet"><tt>dependencySet</tt></a>, but this won't work with the <tt>generate-test-resources</tt> goal because it would be executed before the <tt>package</tt> phase. Instead, we use an execution of the <tt>generate-files</tt> goal bound to the <tt>pre-integration-test</tt> phase:</p>
 <div class="source"><pre class="prettyprint">&lt;plugin&gt;
     &lt;groupId&gt;com.github.veithen.alta&lt;/groupId&gt;
     &lt;artifactId&gt;alta-maven-plugin&lt;/artifactId&gt;
     &lt;executions&gt;
         &lt;execution&gt;
+            &lt;phase&gt;pre-integration-test&lt;/phase&gt;
             &lt;goals&gt;
-                &lt;goal&gt;generate-test-resources&lt;/goal&gt;
+                &lt;goal&gt;generate-files&lt;/goal&gt;
             &lt;/goals&gt;
             &lt;configuration&gt;
+                &lt;outputDirectory&gt;${project.build.directory}/links&lt;/outputDirectory&gt;
                 &lt;name&gt;%bundle.symbolicName%.link&lt;/name&gt;
                 &lt;value&gt;%url%&lt;/value&gt;
                 &lt;dependencySet&gt;
                     &lt;scope&gt;test&lt;/scope&gt;
+                    &lt;useProjectArtifact&gt;true&lt;/useProjectArtifact&gt;
                 &lt;/dependencySet&gt;
             &lt;/configuration&gt;
         &lt;/execution&gt;
     &lt;/executions&gt;
 &lt;/plugin&gt;
 </pre></div>
-<p>This configuration assumes that the bundle to be deployed is declared as a dependency in scope compile or test in the POM:</p>
-<div class="source"><pre class="prettyprint">&lt;dependency&gt;
-    &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
-    &lt;artifactId&gt;org.apache.felix.configadmin&lt;/artifactId&gt;
-    &lt;version&gt;1.8.0&lt;/version&gt;
-&lt;/dependency&gt;
+<p>The directory containing the generated link files can then be included in the classpath used by <tt>maven-failsafe-plugin</tt> by setting the <a class="externalLink" href="http://maven.apache.org/surefire/maven-failsafe-plugin/integration-test-mojo.html#additionalClasspathElements"><tt>additionalClasspathElements</tt></a> parameter:</p>
+<div class="source"><pre class="prettyprint">&lt;plugin&gt;
+    &lt;artifactId&gt;maven-failsafe-plugin&lt;/artifactId&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;integration-test&lt;/goal&gt;
+                &lt;goal&gt;verify&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;additionalClasspathElements&gt;
+                    &lt;additionalClasspathElement&gt;${project.build.directory}/links&lt;/additionalClasspathElement&gt;
+                &lt;/additionalClasspathElements&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
 </pre></div>
-<p>Note that this approach completely eliminates the usage of the <tt>mvn:</tt> protocal only if you use <tt>pax-exam-link-assembly</tt> instead of <tt>pax-exam-link-mvn</tt>. This means that the other dependencies of your project should look something like this:</p>
-<div class="source"><pre class="prettyprint">&lt;dependency&gt;
-    &lt;groupId&gt;org.ops4j.pax.exam&lt;/groupId&gt;
-    &lt;artifactId&gt;pax-exam-junit4&lt;/artifactId&gt;
-    &lt;version&gt;${exam.version}&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
-    &lt;artifactId&gt;org.apache.felix.framework&lt;/artifactId&gt;
-    &lt;version&gt;5.2.0&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.ops4j.pax.exam&lt;/groupId&gt;
-    &lt;artifactId&gt;pax-exam-container-native&lt;/artifactId&gt;
-    &lt;version&gt;${exam.version}&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.ops4j.pax.exam&lt;/groupId&gt;
-    &lt;artifactId&gt;pax-exam-link-assembly&lt;/artifactId&gt;
-    &lt;version&gt;${exam.version}&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;
+<p>This makes it possible to reference these link files (including the link file for the bundle built by the current project) using <tt>link:classpath:</tt> URLs, in the same way as in the multi-module setup:</p>
+<div class="source"><pre class="prettyprint">@Configuration
+public static Option[] configuration() {
+    return options(
+            url(&quot;link:classpath:mybundle.link&quot;),
+            junitBundles());
+}
 </pre></div></div>
                   </div>
             </div>
