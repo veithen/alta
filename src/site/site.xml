@@ -59,6 +59,7 @@
         <menu name="Examples">
             <item name="Configuring endorsed libraries in unit tests" href="examples/bootclasspath.html"/>
             <item name="Using Pax Exam in Maven builds" href="examples/pax-exam.html"/>
+            <item name="Single module Pax Exam configuration" href="examples/pax-exam-single-module.html"/>
             <item name="Configuring Surefire Plugin with AspectJ load-time weaving" href="examples/agent.html"/>
         </menu>
         <menu name="Project Information">

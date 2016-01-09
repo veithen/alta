@@ -176,7 +176,7 @@
                             <postBuildHookScript>verify</postBuildHookScript>
                             <goals>
                                 <goal>clean</goal>
-                                <goal>package</goal>
+                                <goal>verify</goal>
                             </goals>
                         </configuration>
                     </execution>

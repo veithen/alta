@@ -79,6 +79,16 @@
                         Sets the dependency scope for this dependencySet.
                     </description>
                 </field>
+                <field>
+                    <name>useProjectArtifact</name>
+                    <version>1.0.0+</version>
+                    <type>boolean</type>
+                    <defaultValue>false</defaultValue>
+                    <description>
+                        Determines whether the artifact produced during the current project's
+                        build should be included in this dependency set.
+                    </description>
+                </field>
             </fields>
         </class>
         <class>

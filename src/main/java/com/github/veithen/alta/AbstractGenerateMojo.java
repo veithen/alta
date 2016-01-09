@@ -223,6 +223,9 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             } catch (ArtifactNotFoundException ex) {
                 throw new MojoExecutionException("Artifact not found", ex);
             }
+            if (dependencySet.isUseProjectArtifact()) {
+                resolvedArtifacts.add(project.getArtifact());
+            }
         }
         
         if (artifacts != null && artifacts.length != 0) {
