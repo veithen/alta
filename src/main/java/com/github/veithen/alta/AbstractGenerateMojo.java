@@ -96,6 +96,11 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 return artifact.getVersion();
             }
         });
+        artifactGroup.addProperty("type", new Property<Artifact>() {
+            public String evaluate(Artifact artifact) {
+                return artifact.getType();
+            }
+        });
         artifactGroup.addProperty("file", new Property<Artifact>() {
             public String evaluate(Artifact artifact) throws EvaluationException {
                 return getArtifactFile(artifact).getPath();
