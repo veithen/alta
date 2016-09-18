@@ -25,8 +25,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
-@Mojo(name="generate-properties", defaultPhase=LifecyclePhase.INITIALIZE)
+@Mojo(name="generate-properties", requiresDependencyResolution=ResolutionScope.TEST, defaultPhase=LifecyclePhase.INITIALIZE)
 public final class GeneratePropertiesMojo extends AbstractGenerateMojo {
     @Override
     protected void process(Map<String,String> result) throws MojoExecutionException, MojoFailureException {

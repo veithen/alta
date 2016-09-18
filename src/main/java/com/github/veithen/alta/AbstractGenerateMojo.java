@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -58,8 +57,6 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.artifact.InvalidDependencyVersionException;
-import org.apache.maven.project.artifact.MavenMetadataSource;
 import org.apache.maven.repository.RepositorySystem;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -213,20 +210,10 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 log.debug("Resolving project dependencies in scope " + dependencySet.getScope());
             }
             ArtifactFilter filter = new ScopeArtifactFilter(dependencySet.getScope());
-            Set<Artifact> artifacts;
-            try {
-                artifacts = MavenMetadataSource.createArtifacts(factory, project.getDependencies(), null, filter, project);
-            } catch (InvalidDependencyVersionException ex) {
-                throw new MojoExecutionException("Failed to collect project dependencies", ex);
-            }
-            // Note: dependencies are always resolved from the repositories declared in the POM, never
-            // from repositories declared in the plugin configuration
-            try {
-                resolvedArtifacts.addAll(resolver.resolveTransitively(artifacts, project.getArtifact(), project.getRemoteArtifactRepositories(), localRepository, artifactMetadataSource).getArtifacts());
-            } catch (ArtifactResolutionException ex) {
-                throw new MojoExecutionException("Unable to resolve artifact", ex);
-            } catch (ArtifactNotFoundException ex) {
-                throw new MojoExecutionException("Artifact not found", ex);
+            for (Artifact artifact : project.getArtifacts()) {
+                if (filter.include(artifact)) {
+                    resolvedArtifacts.add(artifact);
+                }
             }
             if (dependencySet.isUseProjectArtifact()) {
                 resolvedArtifacts.add(project.getArtifact());

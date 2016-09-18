@@ -25,9 +25,10 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-@Mojo(name="generate-resources", defaultPhase=LifecyclePhase.GENERATE_RESOURCES)
+@Mojo(name="generate-resources", requiresDependencyResolution=ResolutionScope.TEST, defaultPhase=LifecyclePhase.GENERATE_RESOURCES)
 public final class GenerateResourcesMojo extends AbstractGenerateResourcesMojo {
     /**
      * Output directory for generated resources. Note that this directory will be automatically
