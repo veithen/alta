@@ -35,7 +35,6 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.InvalidRepositoryException;
-import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactCollector;
@@ -46,8 +45,6 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
-import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
@@ -168,9 +165,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     private RepositorySystem repositorySystem;
     
     @Component
-    private ArtifactFactory factory;
-    
-    @Component
     private ArtifactCollector artifactCollector;
     
     @Component
@@ -241,14 +235,14 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 if (StringUtils.isEmpty(version)) {
                     version = getMissingArtifactVersion(artifactItem);
                 }
-                VersionRange versionRange;
-                try {
-                    versionRange = VersionRange.createFromVersionSpec(version);
-                } catch (InvalidVersionSpecificationException ex) {
-                    throw new MojoExecutionException("Invalid version specified for artifact " + artifactItem.getGroupId() + ":" + artifactItem.getArtifactId(), ex);
-                }
-                Artifact artifact = factory.createDependencyArtifact(artifactItem.getGroupId(), artifactItem.getArtifactId(),
-                        versionRange, artifactItem.getType(), artifactItem.getClassifier(), Artifact.SCOPE_COMPILE);
+                Dependency dependency = new Dependency();
+                dependency.setGroupId(artifactItem.getGroupId());
+                dependency.setArtifactId(artifactItem.getArtifactId());
+                dependency.setVersion(version);
+                dependency.setType(artifactItem.getType());
+                dependency.setClassifier(artifactItem.getClassifier());
+                dependency.setScope(Artifact.SCOPE_COMPILE);
+                Artifact artifact = repositorySystem.createDependencyArtifact(dependency);
                 try {
                     // Find an appropriate version in the specified version range
                     ArtifactResolutionResult artifactResolutionResult = artifactCollector.collect(Collections.singleton(artifact), project.getArtifact(), localRepository, effectiveRepositories, artifactMetadataSource, null, Collections.EMPTY_LIST);
