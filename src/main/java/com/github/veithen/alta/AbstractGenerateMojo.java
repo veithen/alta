@@ -217,7 +217,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             try {
                 artifacts = MavenMetadataSource.createArtifacts(factory, project.getDependencies(), null, filter, project);
             } catch (InvalidDependencyVersionException ex) {
-                throw new MojoExecutionException("Failed to collect project dpendencies", ex);
+                throw new MojoExecutionException("Failed to collect project dependencies", ex);
             }
             // Note: dependencies are always resolved from the repositories declared in the POM, never
             // from repositories declared in the plugin configuration
