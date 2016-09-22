@@ -43,7 +43,9 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.ResolutionNode;
+import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
@@ -203,7 +205,13 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             if (log.isDebugEnabled()) {
                 log.debug("Resolving project dependencies in scope " + dependencySet.getScope());
             }
+
             ArtifactFilter filter = new ScopeArtifactFilter(dependencySet.getScope());
+            List<ArtifactFilter> artifactFilters = new ArrayList<ArtifactFilter>();
+            artifactFilters.add(filter);
+            artifactFilters.add(new IncludeExcludeArtifactFilter(dependencySet.getIncludes(), dependencySet.getExcludes(), null));
+            filter = new AndArtifactFilter(artifactFilters);
+
             for (Artifact artifact : project.getArtifacts()) {
                 if (filter.include(artifact)) {
                     resolvedArtifacts.add(artifact);
