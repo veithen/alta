@@ -96,6 +96,11 @@
                         <type>String</type>
                         <multiplicity>*</multiplicity>
                     </association>
+                    <description>
+                        A set of dependency artifact coordinates to exclude. They must be in the
+                        form groupId:artifactId:type:classifier; components are optional and
+                        wildcards are supported.
+                    </description>
                 </field>
                 <field>
                     <name>includes</name>
@@ -104,6 +109,11 @@
                         <type>String</type>
                         <multiplicity>*</multiplicity>
                     </association>
+                    <description>
+                        A set of dependency artifact coordinates to include. They must be in the
+                        form groupId:artifactId:type:classifier; components are optional and
+                        wildcards are supported.
+                    </description>
                 </field>
             </fields>
         </class>
