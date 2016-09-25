@@ -89,6 +89,22 @@
                         build should be included in this dependency set.
                     </description>
                 </field>
+                <field>
+                    <name>excludes</name>
+                    <version>1.0.0+</version>
+                    <association>
+                        <type>String</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
+                <field>
+                    <name>includes</name>
+                    <version>1.0.0+</version>
+                    <association>
+                        <type>String</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
             </fields>
         </class>
         <class>
