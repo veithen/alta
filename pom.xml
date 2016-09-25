@@ -311,6 +311,7 @@
             <build>
                 <plugins>
                     <plugin>
+                        <!-- Passphrase configuration: http://maven.apache.org/plugins/maven-gpg-plugin/usage.html#Configure_passphrase_in_settings.xml -->
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.6</version>
                         <executions>
@@ -320,9 +321,6 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                                <configuration>
-                                    <passphraseServerId>sonatype-oss-release</passphraseServerId>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
