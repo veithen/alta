@@ -33,6 +33,9 @@ Supported properties
 *-------------------------------+-----------------------------------------------------+
 | <<<version>>>                 | The Maven version                                   |
 *-------------------------------+-----------------------------------------------------+
+| <<<dashClassifier>>>          | The classifier prefixed with a dash, or the empty   |
+|                               | string if the artifact has no classifier.           |
+*-------------------------------+-----------------------------------------------------+
 | <<<type>>>                    | The artifact type (such as <<<jar>>> or <<<zip>>>)  |
 *-------------------------------+-----------------------------------------------------+
 | <<<file>>>                    | The full path of the artifact                       |
