@@ -81,6 +81,12 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <version>0.30</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -175,7 +181,7 @@
                                 <pomInclude>*/pom.xml</pomInclude>
                             </pomIncludes>
                             <postBuildHookScript>verify</postBuildHookScript>
-                            <!-- We want to use JUnit in verification scripts -->
+                            <!-- We want to use Google Truth in verification scripts -->
                             <addTestClassPath>true</addTestClassPath>
                             <goals>
                                 <goal>clean</goal>

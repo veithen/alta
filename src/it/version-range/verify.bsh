@@ -18,14 +18,11 @@
  * #L%
  */
 import java.io.*;
+import com.google.common.truth.*;
 
 File file = new File(basedir, "target/generated-test-resources/alta/axis-version");
-if (!file.exists()) {
-    throw new IllegalStateException(file + " doesn't exist");
-}
+Truth.assertThat(file.exists()).isTrue();
 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-String content = in.readLine();
-if (!"1.3".equals(content) || in.readLine() != null) {
-    throw new IllegalStateException("Unexpected content");
-}
+Truth.assertThat(in.readLine()).isEqualTo("1.3");
+Truth.assertThat(in.readLine()).isNull();
 in.close();

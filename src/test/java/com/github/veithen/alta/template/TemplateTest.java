@@ -19,8 +19,7 @@
  */
 package com.github.veithen.alta.template;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,12 +74,12 @@ public class TemplateTest {
     @Test
     public void test() throws Exception {
         Person person = new Person("Roy", "Manning", new Address("High street", "Dummytown"));
-        assertEquals("Roy Manning lives in Dummytown", templateCompiler.compile("%givenName% %surname% lives in %address.city%").evaluate(person));
+        assertThat(templateCompiler.compile("%givenName% %surname% lives in %address.city%").evaluate(person)).isEqualTo("Roy Manning lives in Dummytown");
     }
     
     @Test
     public void testPropertyNotSupported() throws Exception {
         Person person = new Person("Albert", "Einstein", null);
-        assertNull(templateCompiler.compile("%address.street% %address.city%").evaluate(person));
+        assertThat(templateCompiler.compile("%address.street% %address.city%").evaluate(person)).isNull();
     }
 }
