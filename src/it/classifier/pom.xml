@@ -35,7 +35,7 @@
                         </goals>
                         <configuration>
                             <name>%groupId%/%artifactId%%dashClassifier%</name>
-                            <value>%file%</value>
+                            <value>%groupId%/%artifactId%/%classifier%</value>
                             <artifacts>
                                 <artifact>
                                     <groupId>commons-logging</groupId>
