@@ -2,6 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.github.veithen</groupId>
+        <artifactId>parent</artifactId>
+        <version>1-SNAPSHOT</version>
+    </parent>
+
     <groupId>com.github.veithen.alta</groupId>
     <artifactId>alta-maven-plugin</artifactId>
     <version>0.5-SNAPSHOT</version>
@@ -21,13 +27,6 @@
         </license>
     </licenses>
 
-    <developers>
-        <developer>
-            <name>Andreas Veithen</name>
-            <email>andreas.veithen@gmail.com</email>
-        </developer>
-    </developers>
-
     <prerequisites>
         <maven>${maven.version}</maven>
     </prerequisites>
@@ -38,17 +37,8 @@
         <developerConnection>scm:git:https://github.com/veithen/alta.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.scm.id>github</project.scm.id>
         <maven.version>3.0</maven.version>
         <maven-plugin-plugin.version>3.3</maven-plugin-plugin.version>
     </properties>
@@ -235,48 +225,12 @@
                 <version>1.7</version>
                 <configuration>
                     <projectName>Alta Maven Plugin</projectName>
-                    <organizationName>Andreas Veithen</organizationName>
                     <licenseName>apache_v2</licenseName>
-                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
-                    <canUpdateCopyright>true</canUpdateCopyright>
-                    <canUpdateDescription>true</canUpdateDescription>
                     <extraExtensions>
                         <vm>apt</vm>
                         <bsh>java</bsh>
                         <mdo>xml</mdo>
                     </extraExtensions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>tidy-maven-plugin</artifactId>
-                <version>1.0-beta-1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.5</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.2</version>
-                <configuration>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
                 </configuration>
             </plugin>
         </plugins>
@@ -304,28 +258,4 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <profiles>
-        <profile> 
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <!-- Passphrase configuration: http://maven.apache.org/plugins/maven-gpg-plugin/usage.html#Configure_passphrase_in_settings.xml -->
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
