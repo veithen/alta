@@ -153,6 +153,9 @@
                         <goals>
                             <goal>install</goal>
                         </goals>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -178,6 +181,7 @@
                                 <goal>clean</goal>
                                 <goal>verify</goal>
                             </goals>
+                            <skipInvocation>${skipTests}</skipInvocation>
                         </configuration>
                     </execution>
                 </executions>
