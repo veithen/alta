@@ -19,6 +19,16 @@
  */
 import java.io.*;
 import com.google.common.truth.*;
+File noClassiferFile = new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging");
+Truth.assertThat(noClassiferFile.exists()).isTrue();
+BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(noClassiferFile), "utf-8"));
+Truth.assertThat(in.readLine()).isEqualTo("commons-logging/commons-logging/");
+Truth.assertThat(in.readLine()).isNull();
+in.close();
 
-Truth.assertThat(new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging").exists()).isTrue();
-Truth.assertThat(new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging-sources").exists()).isTrue();
+File withClassifierFile = new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging-sources"); 
+Truth.assertThat(withClassifierFile.exists()).isTrue();
+in = new BufferedReader(new InputStreamReader(new FileInputStream(withClassifierFile), "utf-8"));
+Truth.assertThat(in.readLine()).isEqualTo("commons-logging/commons-logging/sources");
+Truth.assertThat(in.readLine()).isNull();
+in.close();
