@@ -24,23 +24,38 @@ import java.util.Map;
 final class PropertyExpression<C,GC> extends Expression<C> {
     private final PropertyGroup<C,GC> group;
     private final Property<GC> property;
+    private final String prefix;
+    private final String suffix;
+    private final String defaultValue;
     
-    public PropertyExpression(PropertyGroup<C,GC> group, Property<GC> property) {
+    public PropertyExpression(PropertyGroup<C,GC> group, Property<GC> property, String prefix, String suffix, String defaultValue) {
         this.group = group;
         this.property = property;
+        this.prefix = prefix;
+        this.suffix = suffix;
+        this.defaultValue = defaultValue;
     }
 
     @Override
     boolean evaluate(C object, Map<Object,Object> contextMap, StringBuilder buffer) throws EvaluationException {
-        GC groupContext = group.getGroupContextClass().cast(contextMap.get(group));
-        if (groupContext == null) {
+        GC groupContext;
+        if (contextMap.containsKey(group)) {
+            groupContext = group.getGroupContextClass().cast(contextMap.get(group));
+        } else {
             groupContext = group.prepare(object);
-            if (groupContext == null) {
-                return false;
-            }
             contextMap.put(group, groupContext);
         }
-        buffer.append(property.evaluate(groupContext));
-        return true;
+        String value = groupContext == null ? null : property.evaluate(groupContext);
+        if (value != null) {
+            buffer.append(prefix);
+            buffer.append(value);
+            buffer.append(suffix);
+            return true;
+        } else if (defaultValue != null) {
+            buffer.append(defaultValue);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

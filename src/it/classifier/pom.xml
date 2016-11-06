@@ -34,7 +34,7 @@
                             <goal>generate-test-resources</goal>
                         </goals>
                         <configuration>
-                            <name>%groupId%/%artifactId%%dashClassifier%</name>
+                            <name>%groupId%/%artifactId%%classifier?-@:%</name>
                             <value>%file%</value>
                             <artifacts>
                                 <artifact>

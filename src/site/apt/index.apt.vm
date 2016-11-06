@@ -96,10 +96,26 @@ META-INF/versions/org.apache.httpcomponents/httpcore
   can be used to join information from multiple artifacts into a single Maven project property.
   Note that a duplicate key results in an error if no separator is specified.
 
-* Unresolvable properties
+* Unresolvable properties and null values
 
-  Not all properties are defined for all artifacts. For example, the <<<bundle.*>>> properties
-  are only defined for Maven artifacts that are also OSGi bundles. If one of the name or value templates
-  contains a property that is unresolvable for a given artifact, then that artifact is simply skipped,
-  with one exception: if the <<<altName>>> parameter is specified and is resolvable, then it is used
-  instead of the <<<name>>> parameter.
+  Not all properties are defined for all artifacts. For example, the <<<classifier>>> property can be
+  null and the <<<bundle.*>>> properties are only defined for Maven artifacts that are also OSGi bundles.
+  To deal with properties that can be null or undefined, the following extended syntax is
+  supported:
+
+--------------------------------
+%property?prefix@suffix:default%
+--------------------------------
+
+  If the property is defined, then the prefix and suffix will be added to its value.
+  If it is undefined or null, then the default value will be used instead. E.g. the following
+  expression would add the artifact classifier prefixed with a dash:
+
+----------------
+%classifier?-@:%
+----------------
+
+  Another approach is to use the <<<altName>>> parameter. If the <<<name>>> template is unresolvable
+  (i.e. if one of the expressions refers to an unresolvable property and doesn't specify a default
+  value), then <<<altName>>> will be used instead of <<<name>>>. Finally, if <<<altName>>> isn't
+  resolvable either (or isn't specified), then that artifact is simply skipped,

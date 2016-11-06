@@ -46,6 +46,11 @@ public class TemplateTest {
                 return groupContext.getGivenName();
             }
         });
+        personGroup.addProperty("middleName", new Property<Person>() {
+            public String evaluate(Person groupContext) {
+                return groupContext.getMiddleName();
+            }
+        });
         personGroup.addProperty("surname", new Property<Person>() {
             public String evaluate(Person groupContext) {
                 return groupContext.getSurname();
@@ -72,14 +77,21 @@ public class TemplateTest {
     }
     
     @Test
-    public void test() throws Exception {
-        Person person = new Person("Roy", "Manning", new Address("High street", "Dummytown"));
+    public void testSimple() throws Exception {
+        Person person = new Person("Roy", null, "Manning", new Address("High street", "Dummytown"));
         assertThat(templateCompiler.compile("%givenName% %surname% lives in %address.city%").evaluate(person)).isEqualTo("Roy Manning lives in Dummytown");
     }
     
     @Test
     public void testPropertyNotSupported() throws Exception {
-        Person person = new Person("Albert", "Einstein", null);
+        Person person = new Person("Albert", null, "Einstein", null);
         assertThat(templateCompiler.compile("%address.street% %address.city%").evaluate(person)).isNull();
+    }
+    
+    @Test
+    public void testConditional() throws Exception {
+        Template<Person> template = templateCompiler.compile("%givenName%%middleName? (@):% %surname%");
+        assertThat(template.evaluate(new Person("Albert", null, "Einstein", null))).isEqualTo("Albert Einstein");
+        assertThat(template.evaluate(new Person("John", "Trevor", "Mulder", null))).isEqualTo("John (Trevor) Mulder");
     }
 }

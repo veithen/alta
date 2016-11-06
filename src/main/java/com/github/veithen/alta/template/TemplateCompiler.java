@@ -38,47 +38,49 @@ public final class TemplateCompiler<C> {
     
     public Template<C> compile(String s) throws InvalidTemplateException {
         List<Expression<? super C>> expressions = new ArrayList<Expression<? super C>>();
-        int pos = 0;
-        while (pos < s.length()) {
-            int idx1 = s.indexOf('%', pos);
-            if (idx1 == -1) {
-                expressions.add(new Text(s.substring(pos, s.length())));
-                break;
-            }
-            int idx2 = s.indexOf('%', idx1+1);
-            if (idx2 == -1) {
-                throw new InvalidTemplateException("Unmatched '%' at position " + idx1);
-            }
-            if (idx1 != pos) {
-                expressions.add(new Text(s.substring(pos, idx1)));
-            }
-            String expressionString = s.substring(idx1+1, idx2);
-            int dotIndex = expressionString.indexOf('.');
-            PropertyGroup<C,?> group;
-            String propertyName;
-            if (dotIndex == -1) {
-                group = defaultPropertyGroup;
-                propertyName = expressionString;
-            } else {
-                String groupName = expressionString.substring(0, dotIndex);
-                group = propertyGroups.get(groupName);
-                if (group == null) {
-                    throw new InvalidTemplateException("Unknown property group '" + groupName + "' at position " + (idx1+1));
+        Scanner scanner = new Scanner(s);
+        while (scanner.peek() != -1) {
+            if (scanner.consume('%')) {
+                PropertyGroup<C,?> group;
+                String propertyName;
+                String atom = scanner.parseAtom();
+                if (scanner.consume('.')) {
+                    group = propertyGroups.get(atom);
+                    if (group == null) {
+                        throw new InvalidTemplateException("Unknown property group '" + atom + "'");
+                    }
+                    propertyName = scanner.parseAtom();
+                } else {
+                    group = defaultPropertyGroup;
+                    propertyName = atom;
                 }
-                propertyName = expressionString.substring(dotIndex+1);
+                String prefix = "";
+                String suffix = "";
+                String defaultValue = null;
+                if (scanner.consume('?')) {
+                    prefix = scanner.parseString("?@:%");
+                    scanner.expect('@');
+                    suffix = scanner.parseString("?@:%");
+                    if (scanner.consume(':')) {
+                        defaultValue = scanner.parseString("?@:%");
+                    }
+                }
+                scanner.expect('%');
+                PropertyExpression<C,?> expression = createPropertyExpression(group, propertyName, prefix, suffix, defaultValue);
+                if (expression == null) {
+                    throw new InvalidTemplateException("Unknown property '" + propertyName + "'");
+                }
+                expressions.add(expression);
+            } else {
+                expressions.add(new Text(scanner.parseString("%")));
             }
-            PropertyExpression<C,?> expression = createPropertyExpression(group, propertyName);
-            if (expression == null) {
-                throw new InvalidTemplateException("Unknown property '" + propertyName + "' at position " + (idx1+1));
-            }
-            expressions.add(expression);
-            pos = idx2+1;
         }
         return new Template<C>(expressions);
     }
     
-    private <CG> PropertyExpression<C,CG> createPropertyExpression(PropertyGroup<C,CG> group, String propertyName) {
+    private <CG> PropertyExpression<C,CG> createPropertyExpression(PropertyGroup<C,CG> group, String propertyName,
+            String prefix, String suffix, String defaultValue) {
         Property<CG> property = group.getProperty(propertyName);
-        return property == null ? null : new PropertyExpression<C,CG>(group, property);
+        return property == null ? null : new PropertyExpression<C,CG>(group, property, prefix, suffix, defaultValue);
     }
 }
