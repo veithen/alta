@@ -44,8 +44,16 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <!-- START SNIPPET: plugins -->
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <!-- START SNIPPET: plugins -->
             <plugin>
                 <groupId>com.github.veithen.alta</groupId>
                 <artifactId>alta-maven-plugin</artifactId>
@@ -80,7 +88,7 @@
                     <argLine>-Xbootclasspath/p:${surefire.bootclasspath}</argLine>
                 </configuration>
             </plugin>
+            <!-- END SNIPPET: plugins -->
         </plugins>
-        <!-- END SNIPPET: plugins -->
     </build>
 </project>

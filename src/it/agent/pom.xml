@@ -66,8 +66,16 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <!-- SNIPPET START: plugins -->
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <!-- SNIPPET START: plugins -->
             <plugin>
                 <groupId>com.github.veithen.alta</groupId>
                 <artifactId>alta-maven-plugin</artifactId>
@@ -95,7 +103,7 @@
                     <argLine>-javaagent:${aspectjweaver}</argLine>
                 </configuration>
             </plugin>
+            <!-- SNIPPET END: plugins -->
         </plugins>
-        <!-- SNIPPET END: plugins -->
     </build>
 </project>
