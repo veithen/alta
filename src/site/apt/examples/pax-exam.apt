@@ -24,8 +24,7 @@
 
 Using Pax Exam in Maven builds
 
-  The {{{http://wiki.ops4j.org/display/paxexam/Pax+Exam+-+Tutorial+1}recommended approach}}
-  (see also {{{http://docs.peergreen.com/peergreen_server/latest/reference/xhtml-single/peergreen-server-osgi-paxexam-junit-guide.xhtml}here}})
+  The {{{https://ops4j1.jira.com/wiki/display/paxexam/Pax+Exam+-+Tutorial+1}recommended approach}}
   to run OSGi unit tests with Pax Exam in a Maven build relies on the <<<pax-url-aether>>> library.
   This library allows to resolve Maven artifacts and to provision them as bundles to the OSGi
   runtime started by Pax Exam. Assuming that the bundles to be provisioned are declared as
