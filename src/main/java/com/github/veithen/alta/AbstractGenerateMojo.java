@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,16 +34,10 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.InvalidRepositoryException;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactCollector;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
@@ -53,8 +46,11 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
+import org.apache.maven.shared.artifact.resolve.ArtifactResolver;
+import org.apache.maven.shared.artifact.resolve.ArtifactResolverException;
 import org.codehaus.plexus.util.StringUtils;
 
 import com.github.veithen.alta.template.EvaluationException;
@@ -170,13 +166,10 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     private RepositorySystem repositorySystem;
     
     @Component
-    private ArtifactCollector artifactCollector;
-    
-    @Component
-    private ArtifactMetadataSource artifactMetadataSource;
-    
-    @Component
     private ArtifactResolver resolver;
+
+    @Parameter(defaultValue="${session}", readonly=true, required=true)
+    private MavenSession session;
 
     @Parameter(readonly=true, required=true, defaultValue="${project}")
     protected MavenProject project;
@@ -222,21 +215,18 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         }
         
         if (artifacts != null && artifacts.length != 0) {
-            List<ArtifactRepository> pomRepositories = project.getRemoteArtifactRepositories();
-            List<ArtifactRepository> effectiveRepositories;
+            DefaultProjectBuildingRequest projectBuildingRequest = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
+            List<ArtifactRepository> remoteRepositories = new ArrayList<ArtifactRepository>(projectBuildingRequest.getRemoteRepositories());
             if (repositories != null && repositories.length > 0) {
-                effectiveRepositories = new ArrayList<ArtifactRepository>(pomRepositories.size() + repositories.length);
-                effectiveRepositories.addAll(pomRepositories);
                 for (Repository repository : repositories) {
                     try {
-                        effectiveRepositories.add(repositorySystem.buildArtifactRepository(repository));
+                        remoteRepositories.add(repositorySystem.buildArtifactRepository(repository));
                     } catch (InvalidRepositoryException ex) {
                         throw new MojoExecutionException("Invalid repository", ex);
                     }
                 }
-            } else {
-                effectiveRepositories = pomRepositories;
             }
+            projectBuildingRequest.setRemoteRepositories(remoteRepositories);
             for (ArtifactItem artifactItem : artifacts) {
                 String version = artifactItem.getVersion();
                 if (StringUtils.isEmpty(version)) {
@@ -250,19 +240,13 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 dependency.setClassifier(artifactItem.getClassifier());
                 dependency.setScope(Artifact.SCOPE_COMPILE);
                 Artifact artifact = repositorySystem.createDependencyArtifact(dependency);
+                System.out.println(artifact.getVersion());
+                System.out.println(artifact.getVersionRange());
                 try {
-                    // Find an appropriate version in the specified version range
-                    ArtifactResolutionResult artifactResolutionResult = artifactCollector.collect(Collections.singleton(artifact), project.getArtifact(), localRepository, effectiveRepositories, artifactMetadataSource, null, Collections.EMPTY_LIST);
-                    artifact = ((ResolutionNode)artifactResolutionResult.getArtifactResolutionNodes().iterator().next()).getArtifact();
-                    
-                    // Download the artifact
-                    resolver.resolve(artifact, effectiveRepositories, localRepository);
-                } catch (ArtifactResolutionException ex) {
+                    resolvedArtifacts.add(resolver.resolveArtifact(projectBuildingRequest, artifact).getArtifact());
+                } catch (ArtifactResolverException ex) {
                     throw new MojoExecutionException("Unable to resolve artifact", ex);
-                } catch (ArtifactNotFoundException ex) {
-                    throw new MojoExecutionException("Artifact not found", ex);
                 }
-                resolvedArtifacts.add(artifact);
             }
         }
         
