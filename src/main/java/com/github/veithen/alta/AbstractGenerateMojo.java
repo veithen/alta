@@ -240,8 +240,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 dependency.setClassifier(artifactItem.getClassifier());
                 dependency.setScope(Artifact.SCOPE_COMPILE);
                 Artifact artifact = repositorySystem.createDependencyArtifact(dependency);
-                System.out.println(artifact.getVersion());
-                System.out.println(artifact.getVersionRange());
                 try {
                     resolvedArtifacts.add(resolver.resolveArtifact(projectBuildingRequest, artifact).getArtifact());
                 } catch (ArtifactResolverException ex) {
