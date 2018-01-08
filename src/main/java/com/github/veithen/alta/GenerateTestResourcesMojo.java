@@ -28,7 +28,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-@Mojo(name="generate-test-resources", requiresDependencyResolution=ResolutionScope.TEST, defaultPhase=LifecyclePhase.GENERATE_TEST_RESOURCES)
+@Mojo(name="generate-test-resources", requiresDependencyResolution=ResolutionScope.TEST,
+      defaultPhase=LifecyclePhase.GENERATE_TEST_RESOURCES, threadSafe=true)
 public final class GenerateTestResourcesMojo extends AbstractGenerateResourcesMojo {
     /**
      * Output directory for generated resources. Note that this directory will be automatically

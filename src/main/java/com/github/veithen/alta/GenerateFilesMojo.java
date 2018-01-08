@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-@Mojo(name="generate-files", requiresDependencyResolution=ResolutionScope.TEST)
+@Mojo(name="generate-files", requiresDependencyResolution=ResolutionScope.TEST, threadSafe=true)
 public final class GenerateFilesMojo extends AbstractGenerateFilesMojo {
     /**
      * Output directory for generated files.
