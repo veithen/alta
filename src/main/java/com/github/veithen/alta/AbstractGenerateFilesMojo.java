@@ -29,8 +29,15 @@ import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class AbstractGenerateFilesMojo extends AbstractGenerateMojo {
+    /**
+     * The charset encoding to use for the generated files.
+     */
+    @Parameter(required=true, defaultValue="UTF-8")
+    private String encoding;
+
     @Override
     protected final void process(Map<String,String> result) throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
@@ -50,8 +57,7 @@ public abstract class AbstractGenerateFilesMojo extends AbstractGenerateMojo {
             try {
                 FileOutputStream fos = new FileOutputStream(outputFile);
                 try {
-                    // TODO: charset encoding
-                    Writer out = new OutputStreamWriter(fos);
+                    Writer out = new OutputStreamWriter(fos, encoding);
                     out.write(entry.getValue());
                     out.flush();
                 } finally {
