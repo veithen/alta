@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>4</version>
+        <version>5</version>
     </parent>
 
     <groupId>com.github.veithen.alta</groupId>
@@ -190,7 +190,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.3</version>
                 <configuration>
                     <skipDeploy>true</skipDeploy>
                 </configuration>
@@ -217,12 +216,10 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>1.14</version>
                 <configuration>
                     <projectName>Alta Maven Plugin</projectName>
                     <licenseName>apache_v2</licenseName>
                     <extraExtensions>
-                        <vm>apt</vm>
                         <bsh>java</bsh>
                         <mdo>xml</mdo>
                     </extraExtensions>

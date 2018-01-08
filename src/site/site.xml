@@ -22,7 +22,7 @@
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.4</version>
+        <version>1.7</version>
     </skin>
     <custom>
         <fluidoSkin>
@@ -34,7 +34,7 @@
         </fluidoSkin>
     </custom>
     <body>
-        <head>
+        <head><![CDATA[
             <script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -44,7 +44,7 @@
               ga('create', 'UA-56790914-1', 'auto');
               ga('send', 'pageview');
             </script>
-        </head>
+        ]]></head>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
             <item name="Goals" href="plugin-info.html">
