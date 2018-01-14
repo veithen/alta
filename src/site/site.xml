@@ -64,6 +64,7 @@
         </menu>
         <menu name="Project Information">
             <item name="Source Repository" href="source-repository.html"/>
+            <item name="Code Coverage" href="code-coverage/index.html"/>
         </menu>
     </body>
 </project>
