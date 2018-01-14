@@ -166,7 +166,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.8.1-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -177,6 +177,7 @@
                             <includes>
                                 <include>com.github.veithen.alta.*</include>
                             </includes>
+                            <sessionIdPrefix>${project.groupId}:${project.artifactId}</sessionIdPrefix>
                         </configuration>
                     </execution>
                     <execution>
