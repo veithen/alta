@@ -25,7 +25,7 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>6</version>
+        <version>7-SNAPSHOT</version>
     </parent>
 
     <groupId>com.github.veithen.alta</groupId>
@@ -164,38 +164,15 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.1</version>
-                <executions>
-                    <execution>
-                        <!-- Install the project artifact before the integration tests so that
-                             they can use it. This avoids the complications related to setting
-                             up a local repository for the invoker plugin. -->
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>install</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipTests}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-invoker-plugin</artifactId>
-                <version>1.8</version>
                 <executions>
                     <execution>
                         <id>integration-test</id>
                         <goals>
+                            <goal>install</goal>
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <projectsDirectory>src/it</projectsDirectory>
-                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                            <pomIncludes>
-                                <pomInclude>*/pom.xml</pomInclude>
-                            </pomIncludes>
                             <postBuildHookScript>verify</postBuildHookScript>
                             <!-- We want to use Google Truth in verification scripts -->
                             <addTestClassPath>true</addTestClassPath>
@@ -203,7 +180,6 @@
                                 <goal>clean</goal>
                                 <goal>verify</goal>
                             </goals>
-                            <skipInvocation>${skipTests}</skipInvocation>
                         </configuration>
                     </execution>
                 </executions>
