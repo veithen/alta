@@ -173,7 +173,6 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <postBuildHookScript>verify</postBuildHookScript>
                             <!-- We want to use Google Truth in verification scripts -->
                             <addTestClassPath>true</addTestClassPath>
                             <goals>
