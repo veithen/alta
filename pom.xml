@@ -61,7 +61,6 @@
     <properties>
         <github.repository>alta</github.repository>
         <maven.version>3.0</maven.version>
-        <maven-plugin-plugin.version>3.3</maven-plugin-plugin.version>
     </properties>
 
     <dependencies>
@@ -140,28 +139,6 @@
                         <exclude>com/github/veithen/alta/Configuration.java</exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>${maven-plugin-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <!-- See MNG-5346 -->
-                        <id>default-descriptor</id>
-                        <goals>
-                            <goal>descriptor</goal>
-                        </goals>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>mojo-descriptor</id>
-                        <goals>
-                            <goal>descriptor</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -270,7 +247,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>${maven-plugin-plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>
