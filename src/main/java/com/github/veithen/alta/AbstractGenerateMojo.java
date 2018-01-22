@@ -24,34 +24,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.InvalidRepositoryException;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
-import org.apache.maven.shared.artifact.resolve.ArtifactResolver;
-import org.apache.maven.shared.artifact.resolve.ArtifactResolverException;
-import org.codehaus.plexus.util.StringUtils;
 
 import com.github.veithen.alta.template.EvaluationException;
 import com.github.veithen.alta.template.InvalidTemplateException;
@@ -59,8 +45,10 @@ import com.github.veithen.alta.template.Property;
 import com.github.veithen.alta.template.PropertyGroup;
 import com.github.veithen.alta.template.Template;
 import com.github.veithen.alta.template.TemplateCompiler;
+import com.github.veithen.mojo.ArtifactProcessingMojo;
+import com.github.veithen.mojo.SkippableMojo;
 
-public abstract class AbstractGenerateMojo extends AbstractMojo {
+public abstract class AbstractGenerateMojo extends AbstractMojo implements SkippableMojo, ArtifactProcessingMojo {
     private static final TemplateCompiler<Context> templateCompiler;
     
     static {
@@ -145,32 +133,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     @Parameter
     private String separator;
     
-    /**
-     * Skip plugin execution completely.
-     *
-     * @since 0.3
-     */
-    @Parameter(defaultValue = "false")
-    private boolean skip;
-    
-    @Parameter
-    private DependencySet dependencySet;
-    
-    @Parameter
-    private ArtifactItem[] artifacts;
-    
-    @Parameter
-    private Repository[] repositories;
-    
-    @Component
-    private RepositorySystem repositorySystem;
-    
-    @Component
-    private ArtifactResolver resolver;
-
-    @Parameter(defaultValue="${session}", readonly=true, required=true)
-    private MavenSession session;
-
     @Parameter(readonly=true, required=true, defaultValue="${project}")
     protected MavenProject project;
     
@@ -179,10 +141,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     
     public final void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
-        if (skip) {
-            log.info("Skipping plugin execution");
-            return;
-        }
         Template<Context> nameTemplate;
         try {
             nameTemplate = templateCompiler.compile(name);
@@ -195,61 +153,8 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         } catch (InvalidTemplateException ex) {
             throw new MojoExecutionException("Invalid value template", ex);
         }
-        List<Artifact> resolvedArtifacts = new ArrayList<Artifact>();
-        
-        if (dependencySet != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Resolving project dependencies in scope " + dependencySet.getScope());
-            }
-            AndArtifactFilter filter = new AndArtifactFilter();
-            filter.add(new ScopeArtifactFilter(dependencySet.getScope()));
-            filter.add(new IncludeExcludeArtifactFilter(dependencySet.getIncludes(), dependencySet.getExcludes(), null));
-            for (Artifact artifact : project.getArtifacts()) {
-                if (filter.include(artifact)) {
-                    resolvedArtifacts.add(artifact);
-                }
-            }
-            if (dependencySet.isUseProjectArtifact()) {
-                resolvedArtifacts.add(project.getArtifact());
-            }
-        }
-        
-        if (artifacts != null && artifacts.length != 0) {
-            DefaultProjectBuildingRequest projectBuildingRequest = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
-            List<ArtifactRepository> remoteRepositories = new ArrayList<ArtifactRepository>(projectBuildingRequest.getRemoteRepositories());
-            if (repositories != null && repositories.length > 0) {
-                for (Repository repository : repositories) {
-                    try {
-                        remoteRepositories.add(repositorySystem.buildArtifactRepository(repository));
-                    } catch (InvalidRepositoryException ex) {
-                        throw new MojoExecutionException("Invalid repository", ex);
-                    }
-                }
-            }
-            projectBuildingRequest.setRemoteRepositories(remoteRepositories);
-            for (ArtifactItem artifactItem : artifacts) {
-                String version = artifactItem.getVersion();
-                if (StringUtils.isEmpty(version)) {
-                    version = getMissingArtifactVersion(artifactItem);
-                }
-                Dependency dependency = new Dependency();
-                dependency.setGroupId(artifactItem.getGroupId());
-                dependency.setArtifactId(artifactItem.getArtifactId());
-                dependency.setVersion(version);
-                dependency.setType(artifactItem.getType());
-                dependency.setClassifier(artifactItem.getClassifier());
-                dependency.setScope(Artifact.SCOPE_COMPILE);
-                Artifact artifact = repositorySystem.createDependencyArtifact(dependency);
-                try {
-                    resolvedArtifacts.add(resolver.resolveArtifact(projectBuildingRequest, artifact).getArtifact());
-                } catch (ArtifactResolverException ex) {
-                    throw new MojoExecutionException("Unable to resolve artifact", ex);
-                }
-            }
-        }
-        
         Map<String,String> result = new HashMap<String,String>();
-        for (Artifact artifact : resolvedArtifacts) {
+        for (Artifact artifact : resolveArtifacts()) {
             if (log.isDebugEnabled()) {
                 log.debug("Processing artifact " + artifact.getId());
             }
@@ -283,41 +188,6 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
             }
         }
         process(result);
-    }
-    
-    private String getMissingArtifactVersion(ArtifactItem artifact) throws MojoExecutionException {
-        List<Dependency> dependencies = project.getDependencies();
-        List<Dependency> managedDependencies = project.getDependencyManagement() == null ? null
-                : project.getDependencyManagement().getDependencies();
-        String version = findDependencyVersion(artifact, dependencies, false);
-        if (version == null && managedDependencies != null) {
-            version = findDependencyVersion(artifact, managedDependencies, false);
-        }
-        if (version == null) {
-            version = findDependencyVersion(artifact, dependencies, true);
-        }
-        if (version == null && managedDependencies != null) {
-            version = findDependencyVersion(artifact, managedDependencies, true);
-        }
-        if (version == null) {
-            throw new MojoExecutionException(
-                "Unable to find artifact version of " + artifact.getGroupId() + ":" + artifact.getArtifactId()
-                    + " in either dependency list or in project's dependency management." );
-        } else {
-            return version;
-        }
-    }
-
-    private String findDependencyVersion(ArtifactItem artifact, List<Dependency> dependencies, boolean looseMatch) {
-        for (Dependency dependency : dependencies) {
-            if (StringUtils.equals(dependency.getArtifactId(), artifact.getArtifactId())
-                && StringUtils.equals(dependency.getGroupId(), artifact.getGroupId())
-                && (looseMatch || StringUtils.equals(dependency.getClassifier(), artifact.getClassifier()))
-                && (looseMatch || StringUtils.equals(dependency.getType(), artifact.getType()))) {
-                return dependency.getVersion();
-            }
-        }
-        return null;
     }
 
     static File getArtifactFile(Artifact artifact) throws EvaluationException {
