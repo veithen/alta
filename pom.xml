@@ -194,10 +194,6 @@
                 <configuration>
                     <projectName>Alta Maven Plugin</projectName>
                     <licenseName>apache_v2</licenseName>
-                    <extraExtensions>
-                        <bsh>java</bsh>
-                        <mdo>xml</mdo>
-                    </extraExtensions>
                 </configuration>
             </plugin>
         </plugins>
