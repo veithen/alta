@@ -28,7 +28,7 @@
             <repositories>
                 <repository>
                     <id>local.central</id>
-                    <url>http://localhost:@localRepositoryProxyPort@</url>
+                    <url>http://localhost:@resolverProxyPort@</url>
                     <releases>
                         <enabled>true</enabled>
                         <checksumPolicy>ignore</checksumPolicy>
@@ -42,7 +42,7 @@
             <pluginRepositories>
                 <pluginRepository>
                     <id>local.central</id>
-                    <url>http://localhost:@localRepositoryProxyPort@</url>
+                    <url>http://localhost:@resolverProxyPort@</url>
                     <releases>
                         <enabled>true</enabled>
                         <checksumPolicy>ignore</checksumPolicy>
