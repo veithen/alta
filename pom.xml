@@ -144,8 +144,8 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.veithen</groupId>
-                <artifactId>local-repo-proxy-maven-plugin</artifactId>
+                <groupId>com.github.veithen.invoker</groupId>
+                <artifactId>resolver-proxy-maven-plugin</artifactId>
                 <version>0.1-SNAPSHOT</version>
                 <executions>
                     <execution>
