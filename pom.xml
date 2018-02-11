@@ -62,6 +62,7 @@
         <github.repository>alta</github.repository>
         <javaVersion>1.7</javaVersion>
         <maven.version>3.0</maven.version>
+        <mojo.aspects.version>0.1-SNAPSHOT</mojo.aspects.version>
     </properties>
 
     <dependencies>
@@ -84,7 +85,7 @@
         <dependency>
             <groupId>com.github.veithen.maven</groupId>
             <artifactId>mojo-aspects</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${mojo.aspects.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -180,6 +181,31 @@
                 <configuration>
                     <skipDeploy>true</skipDeploy>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.github.veithen.maven</groupId>
+                                    <artifactId>mojo-aspects</artifactId>
+                                    <version>${mojo.aspects.version}</version>
+                                    <classifier>xdoc</classifier>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
+                                    <includes>artifact-sets.xml</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.github.github</groupId>
