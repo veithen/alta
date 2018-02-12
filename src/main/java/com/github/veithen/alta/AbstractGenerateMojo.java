@@ -133,10 +133,10 @@ public abstract class AbstractGenerateMojo extends AbstractMojo implements Skipp
     @Parameter
     private String separator;
     
-    @Parameter(readonly=true, required=true, defaultValue="${project}")
+    @Parameter(property="project", readonly=true, required=true)
     protected MavenProject project;
     
-    @Parameter(readonly=true, required=true, defaultValue="${localRepository}")
+    @Parameter(property="localRepository", readonly=true, required=true)
     private ArtifactRepository localRepository;
     
     public final void execute() throws MojoExecutionException, MojoFailureException {
