@@ -62,7 +62,7 @@
         <github.repository>alta</github.repository>
         <javaVersion>1.7</javaVersion>
         <maven.version>3.0</maven.version>
-        <mojo.aspects.version>0.1-SNAPSHOT</mojo.aspects.version>
+        <mojo.aspects.version>0.2-SNAPSHOT</mojo.aspects.version>
     </properties>
 
     <dependencies>
