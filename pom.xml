@@ -25,7 +25,7 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>15</version>
+        <version>20-SNAPSHOT</version>
     </parent>
 
     <groupId>com.github.veithen.alta</groupId>
@@ -147,7 +147,6 @@
             <plugin>
                 <groupId>com.github.veithen.invoker</groupId>
                 <artifactId>resolver-proxy-maven-plugin</artifactId>
-                <version>0.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -232,6 +231,13 @@
                 <configuration>
                     <projectName>Alta Maven Plugin</projectName>
                     <licenseName>apache_v2</licenseName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.veithen.maven</groupId>
+                <artifactId>hermetic-maven-plugin</artifactId>
+                <configuration>
+                    <allowExec>true</allowExec>
                 </configuration>
             </plugin>
         </plugins>
