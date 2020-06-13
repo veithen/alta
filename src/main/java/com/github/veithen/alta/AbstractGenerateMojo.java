@@ -46,9 +46,8 @@ import com.github.veithen.alta.template.PropertyGroup;
 import com.github.veithen.alta.template.Template;
 import com.github.veithen.alta.template.TemplateCompiler;
 import com.github.veithen.mojo.ArtifactProcessingMojo;
-import com.github.veithen.mojo.SkippableMojo;
 
-public abstract class AbstractGenerateMojo extends AbstractMojo implements SkippableMojo, ArtifactProcessingMojo {
+public abstract class AbstractGenerateMojo extends AbstractMojo implements ArtifactProcessingMojo {
     private static final TemplateCompiler<Context> templateCompiler;
     
     static {
@@ -139,8 +138,16 @@ public abstract class AbstractGenerateMojo extends AbstractMojo implements Skipp
     @Parameter(property="localRepository", readonly=true, required=true)
     private ArtifactRepository localRepository;
     
+    @Parameter(defaultValue="false")
+    private boolean skip;
+
     public final void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
+
+        if (skip) {
+            log.info("Skipping plugin execution");
+        }
+
         Template<Context> nameTemplate;
         try {
             nameTemplate = templateCompiler.compile(name);
