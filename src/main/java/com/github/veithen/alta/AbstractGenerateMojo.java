@@ -25,17 +25,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
@@ -45,9 +48,11 @@ import com.github.veithen.alta.template.Property;
 import com.github.veithen.alta.template.PropertyGroup;
 import com.github.veithen.alta.template.Template;
 import com.github.veithen.alta.template.TemplateCompiler;
-import com.github.veithen.mojo.ArtifactProcessingMojo;
+import com.github.veithen.mojo.ArtifactSet;
+import com.github.veithen.mojo.ArtifactSetResolver;
+import com.github.veithen.mojo.ArtifactSetResolverException;
 
-public abstract class AbstractGenerateMojo extends AbstractMojo implements ArtifactProcessingMojo {
+public abstract class AbstractGenerateMojo extends AbstractMojo {
     private static final TemplateCompiler<Context> templateCompiler;
     
     static {
@@ -131,15 +136,24 @@ public abstract class AbstractGenerateMojo extends AbstractMojo implements Artif
      */
     @Parameter
     private String separator;
-    
+
+    @Parameter(required=true)
+    private ArtifactSet artifactSet;
+
+    @Parameter
+    private Repository[] repositories;
+
     @Parameter(property="project", readonly=true, required=true)
     protected MavenProject project;
     
-    @Parameter(property="localRepository", readonly=true, required=true)
-    private ArtifactRepository localRepository;
+    @Parameter(property="session", readonly=true, required=true)
+    private MavenSession session;
     
     @Parameter(defaultValue="false")
     private boolean skip;
+
+    @Component
+    private ArtifactSetResolver artifactSetResolver;
 
     public final void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
@@ -161,7 +175,13 @@ public abstract class AbstractGenerateMojo extends AbstractMojo implements Artif
             throw new MojoExecutionException("Invalid value template", ex);
         }
         Map<String,String> result = new HashMap<String,String>();
-        for (Artifact artifact : resolveArtifacts()) {
+        List<Artifact> artifacts;
+        try {
+            artifacts = artifactSetResolver.resolveArtifactSet(project, session, artifactSet, repositories);
+        } catch (ArtifactSetResolverException ex) {
+            throw new MojoExecutionException("Failed to resolve artifact set", ex);
+        }
+        for (Artifact artifact : artifacts) {
             if (log.isDebugEnabled()) {
                 log.debug("Processing artifact " + artifact.getId());
             }
