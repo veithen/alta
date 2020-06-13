@@ -61,16 +61,18 @@
                             <outputDirectory>${project.build.directory}/alta</outputDirectory>
                             <name>%groupId%-%artifactId%.version</name>
                             <value>%version%</value>
-                            <dependencySet>
-                                <scope>compile</scope>
-                                <!-- filter in http components and out the core leaving just the client. -->
-                                <includes>
-                                    <include>org.apache.httpcomponents:*</include>
-                                </includes>
-                                <excludes>
-                                    <exclude>*:httpcore</exclude>
-                                </excludes>
-                            </dependencySet>
+                            <artifactSet>
+                                <dependencySet>
+                                    <scope>compile</scope>
+                                    <!-- filter in http components and out the core leaving just the client. -->
+                                    <includes>
+                                        <include>org.apache.httpcomponents:*</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>*:httpcore</exclude>
+                                    </excludes>
+                                </dependencySet>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>

@@ -55,9 +55,11 @@
                         <configuration>
                             <name>%groupId%-%artifactId%.version</name>
                             <value>%version%</value>
-                            <dependencySet>
-                                <scope>test</scope>
-                            </dependencySet>
+                            <artifactSet>
+                                <dependencySet>
+                                    <scope>test</scope>
+                                </dependencySet>
+                            </artifactSet>
                             <outputDirectory>${project.build.directory}/alta</outputDirectory>
                         </configuration>
                     </execution>

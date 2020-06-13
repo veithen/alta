@@ -36,19 +36,21 @@
                         <configuration>
                             <name>%groupId%/%artifactId%%classifier?-@:%</name>
                             <value>%file%</value>
-                            <artifacts>
-                                <artifact>
-                                    <groupId>commons-logging</groupId>
-                                    <artifactId>commons-logging</artifactId>
-                                    <version>1.2</version>
-                                </artifact>
-                                <artifact>
-                                    <groupId>commons-logging</groupId>
-                                    <artifactId>commons-logging</artifactId>
-                                    <version>1.2</version>
-                                    <classifier>sources</classifier>
-                                </artifact>
-                            </artifacts>
+                            <artifactSet>
+                                <artifacts>
+                                    <artifact>
+                                        <groupId>commons-logging</groupId>
+                                        <artifactId>commons-logging</artifactId>
+                                        <version>1.2</version>
+                                    </artifact>
+                                    <artifact>
+                                        <groupId>commons-logging</groupId>
+                                        <artifactId>commons-logging</artifactId>
+                                        <version>1.2</version>
+                                        <classifier>sources</classifier>
+                                    </artifact>
+                                </artifacts>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>

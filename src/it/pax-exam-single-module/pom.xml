@@ -107,10 +107,12 @@
                             <outputDirectory>${project.build.directory}/links</outputDirectory>
                             <name>%bundle.symbolicName%.link</name>
                             <value>%url%</value>
-                            <dependencySet>
-                                <scope>test</scope>
-                                <useProjectArtifact>true</useProjectArtifact>
-                            </dependencySet>
+                            <artifactSet>
+                                <dependencySet>
+                                    <scope>test</scope>
+                                    <useProjectArtifact>true</useProjectArtifact>
+                                </dependencySet>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>

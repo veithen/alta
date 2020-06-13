@@ -55,9 +55,11 @@
                         <configuration>
                             <name>META-INF/versions/%groupId%/%artifactId%</name>
                             <value>%version%</value>
-                            <dependencySet>
-                                <scope>runtime</scope>
-                            </dependencySet>
+                            <artifactSet>
+                                <dependencySet>
+                                    <scope>runtime</scope>
+                                </dependencySet>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
