@@ -25,12 +25,12 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>20-SNAPSHOT</version>
+        <version>22-SNAPSHOT</version>
     </parent>
 
     <groupId>com.github.veithen.alta</groupId>
     <artifactId>alta-maven-plugin</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Alta Maven Plugin</name>
@@ -62,7 +62,7 @@
         <github.repository>alta</github.repository>
         <javaVersion>1.7</javaVersion>
         <maven.version>3.0</maven.version>
-        <mojo.aspects.version>0.2-SNAPSHOT</mojo.aspects.version>
+        <mojo.aspects.version>0.2.0-SNAPSHOT</mojo.aspects.version>
     </properties>
 
     <dependencies>
