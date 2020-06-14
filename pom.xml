@@ -62,7 +62,7 @@
         <github.repository>alta</github.repository>
         <javaVersion>1.7</javaVersion>
         <maven.version>3.0</maven.version>
-        <mojo.aspects.version>0.2.0-SNAPSHOT</mojo.aspects.version>
+        <artifactset.resolver.version>0.2.0-SNAPSHOT</artifactset.resolver.version>
     </properties>
 
     <repositories>
@@ -93,9 +93,9 @@
             <version>${maven.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.veithen.maven</groupId>
-            <artifactId>mojo-aspects</artifactId>
-            <version>${mojo.aspects.version}</version>
+            <groupId>com.github.veithen.maven.shared</groupId>
+            <artifactId>artifact-set-resolver</artifactId>
+            <version>${artifactset.resolver.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -177,7 +177,7 @@
                                 <artifactItem>
                                     <groupId>com.github.veithen.maven</groupId>
                                     <artifactId>mojo-aspects</artifactId>
-                                    <version>${mojo.aspects.version}</version>
+                                    <version>${artifactset.resolver.version}</version>
                                     <classifier>xdoc</classifier>
                                     <type>jar</type>
                                     <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>

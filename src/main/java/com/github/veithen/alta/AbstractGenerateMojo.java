@@ -48,9 +48,9 @@ import com.github.veithen.alta.template.Property;
 import com.github.veithen.alta.template.PropertyGroup;
 import com.github.veithen.alta.template.Template;
 import com.github.veithen.alta.template.TemplateCompiler;
-import com.github.veithen.mojo.ArtifactSet;
-import com.github.veithen.mojo.ArtifactSetResolver;
-import com.github.veithen.mojo.ArtifactSetResolverException;
+import com.github.veithen.maven.shared.artifactset.ArtifactSet;
+import com.github.veithen.maven.shared.artifactset.ArtifactSetResolver;
+import com.github.veithen.maven.shared.artifactset.ArtifactSetResolverException;
 
 public abstract class AbstractGenerateMojo extends AbstractMojo {
     private static final TemplateCompiler<Context> templateCompiler;
