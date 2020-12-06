@@ -4,3 +4,15 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/pax-exam"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/agent"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/pax-exam-single-module"
+    schedule:
+      interval: "daily"
