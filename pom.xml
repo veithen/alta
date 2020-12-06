@@ -25,7 +25,7 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>22</version>
+        <version>23</version>
     </parent>
 
     <groupId>com.github.veithen.alta</groupId>
@@ -65,16 +65,6 @@
         <artifactset.resolver.version>0.2.0-SNAPSHOT</artifactset.resolver.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>sonatype-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -109,6 +99,16 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
@@ -127,7 +127,7 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.veithen.invoker</groupId>
+                <groupId>com.github.veithen.maven</groupId>
                 <artifactId>resolver-proxy-maven-plugin</artifactId>
                 <executions>
                     <execution>
