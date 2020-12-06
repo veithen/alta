@@ -61,7 +61,7 @@
     <properties>
         <github.repository>alta</github.repository>
         <javaVersion>1.7</javaVersion>
-        <maven.version>3.0</maven.version>
+        <maven.version>3.6.3</maven.version>
         <artifactset.resolver.version>0.2.0-SNAPSHOT</artifactset.resolver.version>
     </properties>
 
