@@ -44,7 +44,6 @@ import org.apache.maven.project.MavenProject;
 
 import com.github.veithen.alta.template.EvaluationException;
 import com.github.veithen.alta.template.InvalidTemplateException;
-import com.github.veithen.alta.template.Property;
 import com.github.veithen.alta.template.PropertyGroup;
 import com.github.veithen.alta.template.Template;
 import com.github.veithen.alta.template.TemplateCompiler;
@@ -63,43 +62,17 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 return context.getArtifact();
             }
         };
-        artifactGroup.addProperty("artifactId", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) {
-                return artifact.getArtifactId();
-            }
-        });
-        artifactGroup.addProperty("groupId", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) {
-                return artifact.getGroupId();
-            }
-        });
-        artifactGroup.addProperty("version", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) {
-                return artifact.getVersion();
-            }
-        });
-        artifactGroup.addProperty("classifier", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) {
-                return artifact.getClassifier();
-            }
-        });
-        artifactGroup.addProperty("type", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) {
-                return artifact.getType();
-            }
-        });
-        artifactGroup.addProperty("file", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) throws EvaluationException {
-                return getArtifactFile(artifact).getPath();
-            }
-        });
-        artifactGroup.addProperty("url", new Property<Artifact>() {
-            public String evaluate(Artifact artifact) throws EvaluationException {
-                try {
-                    return getArtifactFile(artifact).toURI().toURL().toString();
-                } catch (MalformedURLException ex) {
-                    throw new EvaluationException("Unexpected exception", ex);
-                }
+        artifactGroup.addProperty("artifactId", Artifact::getArtifactId);
+        artifactGroup.addProperty("groupId", Artifact::getGroupId);
+        artifactGroup.addProperty("version", Artifact::getVersion);
+        artifactGroup.addProperty("classifier", Artifact::getClassifier);
+        artifactGroup.addProperty("type", Artifact::getType);
+        artifactGroup.addProperty("file", artifact -> getArtifactFile(artifact).getPath());
+        artifactGroup.addProperty("url", artifact -> {
+            try {
+                return getArtifactFile(artifact).toURI().toURL().toString();
+            } catch (MalformedURLException ex) {
+                throw new EvaluationException("Unexpected exception", ex);
             }
         });
         templateCompiler.setDefaultPropertyGroup(artifactGroup);
@@ -109,11 +82,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
                 return extractBundleMetadata(context.getArtifact());
             }
         };
-        bundleGroup.addProperty("symbolicName", new Property<Bundle>() {
-            public String evaluate(Bundle bundle) {
-                return bundle.getSymbolicName();
-            }
-        });
+        bundleGroup.addProperty("symbolicName", Bundle::getSymbolicName);
         templateCompiler.addPropertyGroup("bundle", bundleGroup);
     }
     
