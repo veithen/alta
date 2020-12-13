@@ -58,7 +58,8 @@ public abstract class AbstractGenerateMojo extends AbstractProcessMojo {
 
         Template<Context> nameTemplate = compileTemplate(name, "name");
         Template<Context> valueTemplate = compileTemplate(value, "value");
-        Map<String,String> result = new HashMap<String,String>();
+        Map<String,Artifact> nameToArtifact = new HashMap<>();
+        Map<String,String> result = new HashMap<>();
         for (Artifact artifact : artifacts) {
             if (log.isDebugEnabled()) {
                 log.debug("Processing artifact " + artifact.getId());
@@ -81,10 +82,11 @@ public abstract class AbstractGenerateMojo extends AbstractProcessMojo {
             if (currentValue == null) {
                 currentValue = value;
             } else if (separator == null) {
-                throw new MojoExecutionException("No separator configured");
+                throw new MojoExecutionException("Artifacts " + nameToArtifact.get(name).getId() + " and " + artifact.getId() + " map to the same name '" + name + "', but no separator was configured to combine values");
             } else {
                 currentValue = currentValue + separator + value;
             }
+            nameToArtifact.put(name, artifact);
             result.put(name, currentValue);
         }
         process(result);
