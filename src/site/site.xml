@@ -48,6 +48,7 @@
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
             <item name="Goals" href="plugin-info.html">
+                <item name="copy" href="copy.html"/>
                 <item name="generate-files" href="generate-files-mojo.html"/>
                 <item name="generate-properties" href="generate-properties-mojo.html"/>
                 <item name="generate-resources" href="generate-resources-mojo.html"/>
