@@ -175,8 +175,8 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>com.github.veithen.maven</groupId>
-                                    <artifactId>mojo-aspects</artifactId>
+                                    <groupId>com.github.veithen.maven.shared</groupId>
+                                    <artifactId>artifact-set-resolver</artifactId>
                                     <version>${artifactset.resolver.version}</version>
                                     <classifier>xdoc</classifier>
                                     <type>jar</type>
