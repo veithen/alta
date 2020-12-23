@@ -24,7 +24,6 @@ import static com.google.common.truth.Truth.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class TemplateTest {
     private TemplateCompiler<Person> templateCompiler;
 
@@ -38,27 +37,9 @@ public class TemplateTest {
                         return object;
                     }
                 };
-        personGroup.addProperty(
-                "givenName",
-                new Property<Person>() {
-                    public String evaluate(Person groupContext) {
-                        return groupContext.getGivenName();
-                    }
-                });
-        personGroup.addProperty(
-                "middleName",
-                new Property<Person>() {
-                    public String evaluate(Person groupContext) {
-                        return groupContext.getMiddleName();
-                    }
-                });
-        personGroup.addProperty(
-                "surname",
-                new Property<Person>() {
-                    public String evaluate(Person groupContext) {
-                        return groupContext.getSurname();
-                    }
-                });
+        personGroup.addProperty("givenName", Person::getGivenName);
+        personGroup.addProperty("middleName", Person::getMiddleName);
+        personGroup.addProperty("surname", Person::getSurname);
         templateCompiler.setDefaultPropertyGroup(personGroup);
         PropertyGroup<Person, Address> addressGroup =
                 new PropertyGroup<Person, Address>(Address.class) {
@@ -67,20 +48,8 @@ public class TemplateTest {
                         return object.getAddress();
                     }
                 };
-        addressGroup.addProperty(
-                "street",
-                new Property<Address>() {
-                    public String evaluate(Address groupContext) {
-                        return groupContext.getStreet();
-                    }
-                });
-        addressGroup.addProperty(
-                "city",
-                new Property<Address>() {
-                    public String evaluate(Address groupContext) {
-                        return groupContext.getCity();
-                    }
-                });
+        addressGroup.addProperty("street", Address::getStreet);
+        addressGroup.addProperty("city", Address::getCity);
         templateCompiler.addPropertyGroup("address", addressGroup);
     }
 
