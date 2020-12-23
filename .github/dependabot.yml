@@ -5,11 +5,19 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "maven"
-    directory: "/src/it/pax-exam"
+    directory: "/src/it/agent"
     schedule:
       interval: "daily"
   - package-ecosystem: "maven"
-    directory: "/src/it/agent"
+    directory: "/src/it/bootclasspath"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/generate-test-resources"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/pax-exam"
     schedule:
       interval: "daily"
   - package-ecosystem: "maven"
