@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,17 +32,16 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class AbstractGenerateFilesMojo extends AbstractGenerateMojo {
-    /**
-     * The charset encoding to use for the generated files.
-     */
-    @Parameter(required=true, defaultValue="UTF-8")
+    /** The charset encoding to use for the generated files. */
+    @Parameter(required = true, defaultValue = "UTF-8")
     private String encoding;
 
     @Override
-    protected final void process(Map<String,String> result) throws MojoExecutionException, MojoFailureException {
+    protected final void process(Map<String, String> result)
+            throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
         File outputDirectory = getOutputDirectory();
-        for (Map.Entry<String,String> entry : result.entrySet()) {
+        for (Map.Entry<String, String> entry : result.entrySet()) {
             String resource = entry.getKey();
             File outputFile = new File(outputDirectory, resource);
             File parentDir = outputFile.getParentFile();
@@ -71,5 +70,6 @@ public abstract class AbstractGenerateFilesMojo extends AbstractGenerateMojo {
     }
 
     protected abstract File getOutputDirectory();
+
     protected abstract void postProcess(File outputDirectory);
 }

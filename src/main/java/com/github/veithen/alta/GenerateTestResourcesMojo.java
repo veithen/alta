@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,21 +28,26 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-@Mojo(name="generate-test-resources", requiresDependencyResolution=ResolutionScope.TEST,
-      defaultPhase=LifecyclePhase.GENERATE_TEST_RESOURCES, threadSafe=true)
+@Mojo(
+        name = "generate-test-resources",
+        requiresDependencyResolution = ResolutionScope.TEST,
+        defaultPhase = LifecyclePhase.GENERATE_TEST_RESOURCES,
+        threadSafe = true)
 public final class GenerateTestResourcesMojo extends AbstractGenerateResourcesMojo {
     /**
      * Output directory for generated resources. Note that this directory will be automatically
      * added to the project's test resources and doesn't need to be specified in the POM file.
      */
-    @Parameter(required=true, defaultValue="${project.build.directory}/generated-test-resources/alta")
+    @Parameter(
+            required = true,
+            defaultValue = "${project.build.directory}/generated-test-resources/alta")
     private File outputDirectory;
 
     @Override
     protected File getOutputDirectory() {
         return outputDirectory;
     }
-    
+
     @Override
     protected void addResource(MavenProject project, Resource resource) {
         project.addTestResource(resource);

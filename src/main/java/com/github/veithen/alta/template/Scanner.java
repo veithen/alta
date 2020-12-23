@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,15 +40,15 @@ package com.github.veithen.alta.template;
 final class Scanner {
     private final String s;
     private int pos;
-    
+
     Scanner(String s) {
         this.s = s;
     }
-    
+
     int peek() {
         return pos == s.length() ? -1 : s.charAt(pos);
     }
-    
+
     char consume() throws InvalidTemplateException {
         if (pos == s.length()) {
             throw new InvalidTemplateException("Unexpected end of string");
@@ -56,7 +56,7 @@ final class Scanner {
             return s.charAt(pos++);
         }
     }
-    
+
     void expect(char expected) throws InvalidTemplateException {
         if (pos == s.length()) {
             throw new InvalidTemplateException("Unexpected end of string");
@@ -67,7 +67,7 @@ final class Scanner {
         }
         pos++;
     }
-    
+
     boolean consume(char expected) throws InvalidTemplateException {
         if (peek() == expected) {
             consume();
@@ -76,7 +76,7 @@ final class Scanner {
             return false;
         }
     }
-    
+
     String parseString(String stopChars) throws InvalidTemplateException {
         StringBuilder buffer = new StringBuilder();
         while (true) {
@@ -89,7 +89,7 @@ final class Scanner {
                         buffer.append('\\');
                     }
                 }
-                buffer.append((char)c);
+                buffer.append((char) c);
             } else if (c == -1 || stopChars.indexOf(c) != -1) {
                 return buffer.toString();
             } else {
@@ -97,7 +97,7 @@ final class Scanner {
             }
         }
     }
-    
+
     String parseAtom() throws InvalidTemplateException {
         StringBuilder buffer = new StringBuilder();
         while (isAtomChar(peek())) {
@@ -108,7 +108,7 @@ final class Scanner {
         }
         return buffer.toString();
     }
-    
+
     private static boolean isAtomChar(int c) {
         return 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z';
     }
