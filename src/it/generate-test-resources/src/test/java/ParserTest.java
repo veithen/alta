@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,14 +35,17 @@ public class ParserTest {
     @Test
     public void test() throws Exception {
         List<XMLInputFactory> factories = new ArrayList<XMLInputFactory>();
-        BufferedReader in = new BufferedReader(new InputStreamReader(ParserTest.class.getResourceAsStream("parsers.list"), "utf-8"));
+        BufferedReader in =
+                new BufferedReader(
+                        new InputStreamReader(
+                                ParserTest.class.getResourceAsStream("parsers.list"), "utf-8"));
         Thread currentThread = Thread.currentThread();
         try {
             ClassLoader savedTCCL = currentThread.getContextClassLoader();
             try {
                 String url;
                 while ((url = in.readLine()) != null) {
-                    ClassLoader classLoader = new URLClassLoader(new URL[] { new URL(url) });
+                    ClassLoader classLoader = new URLClassLoader(new URL[] {new URL(url)});
                     currentThread.setContextClassLoader(classLoader);
                     factories.add(XMLInputFactory.newFactory());
                 }
@@ -53,7 +56,8 @@ public class ParserTest {
             in.close();
         }
         assertEquals(2, factories.size());
-        Class<? extends XMLInputFactory> defaultFactoryClass = XMLInputFactory.newFactory().getClass();
+        Class<? extends XMLInputFactory> defaultFactoryClass =
+                XMLInputFactory.newFactory().getClass();
         for (XMLInputFactory factory : factories) {
             Assert.assertNotSame(defaultFactoryClass, factory.getClass());
         }
