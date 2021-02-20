@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -28,8 +28,7 @@ import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ParserTest {
     @Test
@@ -55,11 +54,11 @@ public class ParserTest {
         } finally {
             in.close();
         }
-        assertEquals(2, factories.size());
+        assertThat(factories).hasSize(2);
         Class<? extends XMLInputFactory> defaultFactoryClass =
                 XMLInputFactory.newFactory().getClass();
         for (XMLInputFactory factory : factories) {
-            Assert.assertNotSame(defaultFactoryClass, factory.getClass());
+            assertThat(defaultFactoryClass).isNotSameInstanceAs(factory.getClass());
         }
     }
 }

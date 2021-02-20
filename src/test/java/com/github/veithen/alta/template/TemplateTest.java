@@ -21,13 +21,13 @@ package com.github.veithen.alta.template;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TemplateTest {
     private TemplateCompiler<Person> templateCompiler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         templateCompiler = new TemplateCompiler<Person>();
         PropertyGroup<Person, Person> personGroup =

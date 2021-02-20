@@ -19,9 +19,9 @@
  */
 package test;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AgentTest {
     public void myMethod(int value) {}
@@ -29,6 +29,6 @@ public class AgentTest {
     @Test
     public void test() {
         myMethod(12345);
-        assertEquals(12345, MyAspect.lastValue);
+        assertThat(MyAspect.lastValue).isEqualTo(12345);
     }
 }
