@@ -64,6 +64,7 @@ public abstract class AbstractProcessMojo extends AbstractMojo {
         artifactGroup.addProperty("artifactId", Artifact::getArtifactId);
         artifactGroup.addProperty("groupId", Artifact::getGroupId);
         artifactGroup.addProperty("version", Artifact::getVersion);
+        artifactGroup.addProperty("baseVersion", Artifact::getBaseVersion);
         artifactGroup.addProperty("classifier", Artifact::getClassifier);
         artifactGroup.addProperty("type", Artifact::getType);
         artifactGroup.addProperty("file", artifact -> getArtifactFile(artifact).getPath());

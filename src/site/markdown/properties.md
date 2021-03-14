@@ -25,6 +25,7 @@
 | `groupId`             | The Maven group ID                                  |
 | `artifactId`          | The Maven artifact ID                               |
 | `version`             | The Maven version                                   |
+| `baseVersion`         | The base version (`*-SNAPSHOT` for snapshots)       |
 | `classifier`          | The classifier of the artifact (may be null)        |
 | `type`                | The artifact type (such as `jar` or `zip`)          |
 | `file`                | The full path of the artifact                       |
