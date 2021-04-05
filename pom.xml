@@ -47,10 +47,6 @@
         </license>
     </licenses>
 
-    <prerequisites>
-        <maven>${maven.version}</maven>
-    </prerequisites>
-
     <scm>
         <url>https://github.com/veithen/alta/tree/master</url>
         <connection>scm:git:http://github.com/veithen/alta.git</connection>
