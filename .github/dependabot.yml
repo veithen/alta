@@ -13,7 +13,27 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "maven"
+    directory: "/src/it/classifier"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/copy"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/dependency-management"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
     directory: "/src/it/generate-test-resources"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/includes-excludes"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/it/intro-sample"
     schedule:
       interval: "daily"
   - package-ecosystem: "maven"
