@@ -24,6 +24,8 @@ updates:
     directory: "/src/it/dependency-management"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "com.fasterxml.jackson.core:*"
   - package-ecosystem: "maven"
     directory: "/src/it/generate-test-resources"
     schedule:
