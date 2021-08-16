@@ -57,7 +57,7 @@
     <properties>
         <github.repository>alta</github.repository>
         <javaVersion>1.8</javaVersion>
-        <maven.version>3.8.1</maven.version>
+        <maven.version>3.8.2</maven.version>
         <artifactset.resolver.version>0.2.0</artifactset.resolver.version>
     </properties>
 
