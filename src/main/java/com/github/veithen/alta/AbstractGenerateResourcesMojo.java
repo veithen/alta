@@ -25,6 +25,7 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractGenerateResourcesMojo extends AbstractGenerateFilesMojo {
+    @Override
     protected final void postProcess(File outputDirectory) {
         Resource resource = new Resource();
         resource.setDirectory(outputDirectory.getPath());

@@ -105,6 +105,7 @@ public abstract class AbstractProcessMojo extends AbstractMojo {
 
     @Component private ArtifactSetResolver artifactSetResolver;
 
+    @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
 
