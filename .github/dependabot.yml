@@ -25,7 +25,8 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "com.fasterxml.jackson.core:*"
+      - dependency-name: "com.github.veithen.cosmos:cosmos-osgi-runtime"
+      - dependency-name: "org.slf4j:slf4j-api"
   - package-ecosystem: "maven"
     directory: "/src/it/generate-test-resources"
     schedule:

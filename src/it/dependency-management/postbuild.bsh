@@ -20,9 +20,9 @@
 import java.io.*;
 import com.google.common.truth.*;
 
-File file = new File(basedir, "target/alta/com.fasterxml.jackson.core-jackson-core.version");
+File file = new File(basedir, "target/alta/org.slf4j-slf4j-api.version");
 Truth.assertThat(file.exists()).isTrue();
 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-Truth.assertThat(in.readLine()).isEqualTo("2.12.2");
+Truth.assertThat(in.readLine()).isEqualTo("2.0.0");
 Truth.assertThat(in.readLine()).isNull();
 in.close();
