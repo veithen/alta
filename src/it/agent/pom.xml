@@ -50,7 +50,7 @@
     </dependencies>
     <!-- SNIPPET START: dependencyManagement -->
     <properties>
-        <aspectj.version>1.9.9.1</aspectj.version>
+        <aspectj.version>1.9.19</aspectj.version>
     </properties>
     <dependencyManagement>
         <dependencies>
