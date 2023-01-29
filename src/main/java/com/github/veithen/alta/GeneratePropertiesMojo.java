@@ -20,11 +20,13 @@
 package com.github.veithen.alta;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 @Mojo(
@@ -33,9 +35,26 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
         defaultPhase = LifecyclePhase.INITIALIZE,
         threadSafe = true)
 public final class GeneratePropertiesMojo extends AbstractGenerateMojo {
+    /** Whether the value should be appended to the existing property. */
+    @Parameter private boolean append;
+
     @Override
     protected void process(Map<String, String> result)
             throws MojoExecutionException, MojoFailureException {
-        project.getProperties().putAll(result);
+        Properties properties = project.getProperties();
+        if (append) {
+            for (Map.Entry<String, String> entry : result.entrySet()) {
+                String currentValue = properties.getProperty(entry.getKey());
+                String newValue;
+                if (currentValue == null) {
+                    newValue = entry.getValue();
+                } else {
+                    newValue = currentValue + " " + entry.getValue();
+                }
+                properties.setProperty(entry.getKey(), newValue);
+            }
+        } else {
+            properties.putAll(result);
+        }
     }
 }
