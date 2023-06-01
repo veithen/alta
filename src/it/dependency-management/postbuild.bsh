@@ -18,11 +18,11 @@
  * #L%
  */
 import java.io.*;
-import com.google.common.truth.*;
+import org.assertj.core.api.*;
 
 File file = new File(basedir, "target/alta/org.slf4j-slf4j-api.version");
-Truth.assertThat(file.exists()).isTrue();
+Assertions.assertThat(file.exists()).isTrue();
 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-Truth.assertThat(in.readLine()).isEqualTo("2.0.0");
-Truth.assertThat(in.readLine()).isNull();
+Assertions.assertThat(in.readLine()).isEqualTo("2.0.0");
+Assertions.assertThat(in.readLine()).isNull();
 in.close();

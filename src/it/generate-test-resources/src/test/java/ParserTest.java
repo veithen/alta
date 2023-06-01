@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -58,7 +58,7 @@ public class ParserTest {
         Class<? extends XMLInputFactory> defaultFactoryClass =
                 XMLInputFactory.newFactory().getClass();
         for (XMLInputFactory factory : factories) {
-            assertThat(defaultFactoryClass).isNotSameInstanceAs(factory.getClass());
+            assertThat(defaultFactoryClass).isNotSameAs(factory.getClass());
         }
     }
 }

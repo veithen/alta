@@ -18,8 +18,10 @@
  * #L%
  */
 import java.io.*;
-import com.google.common.truth.*;
+import org.assertj.core.api.*;
 
-Truth.assertThat(new File(basedir, "target/alta/org.apache.httpcomponents-httpclient.version").exists()).isTrue();
-Truth.assertThat(new File(basedir, "target/alta/org.apache.httpcomponents-httpcore.version").exists()).isFalse();
-Truth.assertThat(new File(basedir, "target/alta/commons-logging-commons-logging.version").exists()).isFalse();
+Assertions.assertThat(new File(basedir, "target/alta/org.apache.httpcomponents-httpclient.version").exists()).isTrue();
+Assertions.assertThat(new File(basedir, "target/alta/org.apache.httpcomponents-httpcore.version").exists()).isFalse();
+Assertions.assertThat(new File(basedir, "target/alta/commons-logging-commons-logging.version").exists()).isFalse();
+
+return;

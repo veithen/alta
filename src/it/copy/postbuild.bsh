@@ -18,6 +18,8 @@
  * #L%
  */
 import java.io.*;
-import com.google.common.truth.*;
+import org.assertj.core.api.*;
 
-Truth.assertThat(new File(basedir, "target/test/org.apache.felix.configadmin.jar").exists()).isTrue();
+Assertions.assertThat(new File(basedir, "target/test/org.apache.felix.configadmin.jar").exists()).isTrue();
+
+return;

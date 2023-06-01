@@ -18,7 +18,9 @@
  * #L%
  */
 import java.io.*;
-import com.google.common.truth.*;
+import org.assertj.core.api.*;
 
-Truth.assertThat(new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging").exists()).isTrue();
-Truth.assertThat(new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging-sources").exists()).isTrue();
+Assertions.assertThat(new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging").exists()).isTrue();
+Assertions.assertThat(new File(basedir, "target/generated-test-resources/alta/commons-logging/commons-logging-sources").exists()).isTrue();
+
+return;
