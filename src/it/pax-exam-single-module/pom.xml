@@ -25,7 +25,7 @@
     <version>1</version>
     <packaging>bundle</packaging>
     <properties>
-        <exam.version>4.13.3</exam.version>
+        <exam.version>4.13.5</exam.version>
     </properties>
     <dependencies>
         <dependency>
