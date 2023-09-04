@@ -25,7 +25,7 @@
     <artifactId>pax-exam</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <properties>
-        <exam.version>4.13.3</exam.version>
+        <exam.version>4.13.5</exam.version>
     </properties>
     <dependencies>
         <!-- SNIPPET START: dependency -->
