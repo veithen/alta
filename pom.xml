@@ -58,7 +58,7 @@
         <github.repository>alta</github.repository>
         <javaVersion>11</javaVersion>
         <project.build.outputTimestamp>2023-06-03T20:55:32Z</project.build.outputTimestamp>
-        <maven.version>3.9.4</maven.version>
+        <maven.version>3.9.5</maven.version>
         <artifactset.resolver.version>0.2.0</artifactset.resolver.version>
     </properties>
 
