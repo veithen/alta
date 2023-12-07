@@ -42,6 +42,7 @@ public class ITCase {
     public static Option[] configuration() {
         return options(url("link:classpath:mybundle.link"), junitBundles());
     }
+
     // END SNIPPET: configuration
 
     @Inject private TestService testService;

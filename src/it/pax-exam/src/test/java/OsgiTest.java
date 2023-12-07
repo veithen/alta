@@ -41,6 +41,7 @@ public class OsgiTest {
     public static Option[] configuration() {
         return options(url("link:classpath:org.apache.felix.configadmin.link"), junitBundles());
     }
+
     // END SNIPPET: configuration
 
     @Inject private ConfigurationAdmin configAdmin;
