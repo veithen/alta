@@ -18,7 +18,7 @@
   #L%
   -->
 
-## Using Pax Exam in Maven builds
+# Using Pax Exam in Maven builds
 
 The [recommended approach](https://ops4j1.jira.com/wiki/display/paxexam/Pax+Exam+-+Tutorial+1)
 to run OSGi unit tests with Pax Exam in a Maven build relies on the `pax-url-aether` library.

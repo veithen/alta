@@ -18,7 +18,7 @@
   #L%
   -->
 
-## Single module Pax Exam configuration
+# Single module Pax Exam configuration
 
 The Pax Exam setup shown in the [previous example](./pax-exam.html) works well for
 multi-module Maven projects with a dedicated Maven module for OSGi integration tests. However it is

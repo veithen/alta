@@ -18,7 +18,7 @@
   #L%
   -->
 
-## Configuring endorsed libraries in unit tests (Java <= 8)
+# Configuring endorsed libraries in unit tests (Java <= 8)
 
 In some cases, you need to run your unit tests with certain APIs at a different
 version level than what is provided by the JRE, either because you want to ensure

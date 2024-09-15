@@ -18,9 +18,9 @@
   #L%
   -->
 
-## Introduction
+# Introduction
 
-### Overview
+## Overview
 
 This plugin takes as input a set of Maven artifacts specified as a subset of
 the project dependencies or as an explicit list of artifacts and produces
@@ -41,7 +41,7 @@ This syntax was chosen to avoid conflicts with Maven property substitution (`${p
 used by [maven-invoker-plugin](http://maven.apache.org/plugins/maven-invoker-plugin/) (`@property@`).
 The complete list of supported properties can be found [here](./properties.html).
 
-### Example
+## Example
 
 All this sounds fairly abstract. A concrete example will help to better understand how the plugin works.
 Assume that the plugin is used on a project with the following dependencies:
@@ -75,7 +75,7 @@ As suggested by the example shown above, the name template (resp. value template
 the `name` parameter (resp. `value` parameter), irrespective of the goal being used.
 As we will see below, there is also an `altName` parameter (but no corresponding `altValue` parameter).
 
-### Duplicate key handling
+## Duplicate key handling
 
 Obviously, the template specified for the key may yield the same value for multiple artifacts.
 In some cases it even makes sense to use a fixed value. The plugin joins multiple values for the same key
@@ -83,7 +83,7 @@ using a configurable separator. [One of the samples](./examples/bootclasspath.ht
 can be used to join information from multiple artifacts into a single Maven project property.
 Note that a duplicate key results in an error if no separator is specified.
 
-### Unresolvable properties and null values
+## Unresolvable properties and null values
 
 Not all properties are defined for all artifacts. For example, the `classifier` property can be
 null and the `bundle.*` properties are only defined for Maven artifacts that are also OSGi bundles.

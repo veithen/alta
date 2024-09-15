@@ -18,7 +18,7 @@
   #L%
   -->
 
-## Supported properties
+# Supported properties
 
 | Property              | Description                                         |
 | --------------------- | --------------------------------------------------- |

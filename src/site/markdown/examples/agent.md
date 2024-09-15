@@ -18,7 +18,7 @@
   #L%
   -->
 
-## Configuring Surefire Plugin with AspectJ load-time weaving
+# Configuring Surefire Plugin with AspectJ load-time weaving
 
 Executing unit tests with [AspectJ load-time weaving](https://eclipse.org/aspectj/doc/released/devguide/ltw.html)
 enabled requires configuring `maven-surefire-plugin` to add a `-javaagent` option to the
