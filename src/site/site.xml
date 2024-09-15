@@ -22,7 +22,7 @@
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.7</version>
+        <version>2.0.0-M10</version>
     </skin>
     <custom>
         <fluidoSkin>
@@ -33,6 +33,7 @@
             </gitHub>
         </fluidoSkin>
     </custom>
+    <bannerLeft name="Alta Maven Plugin"/>
     <body>
         <head><![CDATA[
             <script>
