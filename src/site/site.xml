@@ -65,8 +65,8 @@
             <item name="Configuring Surefire Plugin with AspectJ load-time weaving" href="examples/agent.html"/>
         </menu>
         <menu name="Project Information">
-            <item name="Source Repository" href="source-repository.html"/>
-            <item name="Code Coverage" href="code-coverage/index.html"/>
+            <item name="Source Repository" href="scm.html"/>
+            <item name="Code Coverage" href="https://app.codecov.io/gh/veithen/alta"/>
         </menu>
     </body>
 </site>
