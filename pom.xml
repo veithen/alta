@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>55</version>
+        <version>56</version>
     </parent>
 
     <groupId>com.github.veithen.alta</groupId>
@@ -223,13 +223,6 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <projectName>Alta Maven Plugin</projectName>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.veithen.maven</groupId>
-                <artifactId>hermetic-maven-plugin</artifactId>
-                <configuration>
-                    <allowExec>true</allowExec>
                 </configuration>
             </plugin>
         </plugins>
