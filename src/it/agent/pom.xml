@@ -42,7 +42,7 @@
     </dependencies>
     <!-- SNIPPET START: dependencyManagement -->
     <properties>
-        <aspectj.version>1.9.25</aspectj.version>
+        <aspectj.version>1.9.25.1</aspectj.version>
     </properties>
     <dependencyManagement>
         <dependencies>
